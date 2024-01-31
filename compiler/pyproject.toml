@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "compiler"
+version = "0.1.0"
+description = ""
+authors = ["Le36 <48809753+Le36@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pytest = "^8.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
