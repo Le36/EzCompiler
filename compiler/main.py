@@ -1,4 +1,6 @@
 import sys
+
+from compiler.src.parser import parse, ParseException
 from compiler.src.tokenizer import tokenize
 
 
@@ -14,10 +16,12 @@ def read_source_code(input_file):
 
 
 def interpret(source_code, file_name):
-    """
-    Function to interpret the source code.
-    """
-    return tokenize(source_code, file_name)
+    try:
+        tokens = tokenize(source_code, file_name)
+        ast = parse(tokens)
+        return tokens, ast
+    except ParseException as e:
+        return str(e)
 
 
 def process_command(command, input_file=None, source_code=None):
