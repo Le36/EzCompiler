@@ -31,11 +31,15 @@ class Token:
 def tokenize(source_code: str, file_name: str = 'editor') -> list[Token]:
     token_patterns = {
         'COMMENT': r'//.*|/\*[\s\S]*?\*/|#.*',
-        'IDENTIFIER': r'[a-zA-Z_][a-zA-Z_0-9]*',
         'INTEGER': r'\d+',
-        'OPERATOR': r'==|!=|<=|>=|\+|-|\*|/|=|<|>',
-        'PUNCTUATION': r'[(),;{}]',
+        'BOOLEAN': r'\b(true|false)\b',
+        'OPERATOR': r'\+|-|\*|/|%|==|!=|<|<=|>|>=|and|or|not|=',
+        'PUNCTUATION': r'[(),;{}:]',
+        'KEYWORD': r'\b(var|if|then|else|while|do|Int|Boolean)\b',
+        'LIBRARY_FUNCTION': r'\b(print_int|read_int|print_bool)\b',
+        'IDENTIFIER': r'[a-zA-Z_][a-zA-Z_0-9]*',
         'WHITESPACE': r'\s+',
+        'UNKNOWN': r'.',
     }
 
     combined_pattern = '|'.join(f'(?P<{token_type}>{pattern})' for token_type, pattern in token_patterns.items())
@@ -56,7 +60,7 @@ def tokenize(source_code: str, file_name: str = 'editor') -> list[Token]:
             line += line_increment
             column = end - source_code.rfind('\n', 0, end)
         else:
-            if token_type not in ['WHITESPACE', 'COMMENT']:
+            if token_type not in ['WHITESPACE', 'COMMENT', 'UNKNOWN']:
                 location = SourceLocation(file_name, line, column)
                 tokens.append(Token(text=token, type=token_type, location=location))
             column += end - start
