@@ -92,3 +92,40 @@ def test_parse_unexpected_end_of_input():
     tokens = tokenize(source_code, 'test')
     with pytest.raises(ParseException):
         parse(tokens)
+
+
+def test_parse_if_then_else():
+    source_code = 'if a then b + c else x * y'
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    assert isinstance(result_ast, ast.IfExpression)
+    assert isinstance(result_ast.condition, ast.Identifier)
+    assert isinstance(result_ast.then_branch, ast.BinaryOp)
+    assert isinstance(result_ast.else_branch, ast.BinaryOp)
+
+
+def test_parse_if_then():
+    source_code = 'if a then b + c'
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    assert isinstance(result_ast, ast.IfExpression)
+    assert result_ast.else_branch is None
+
+
+def test_parse_if_expression_in_arithmetic():
+    source_code = '1 + if true then 2 else 3'
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    assert isinstance(result_ast, ast.BinaryOp)
+    assert isinstance(result_ast.right, ast.IfExpression)
+
+
+def test_parse_boolean_literal():
+    source_code_true = 'true'
+    source_code_false = 'false'
+    tokens_true = tokenize(source_code_true, 'test')
+    tokens_false = tokenize(source_code_false, 'test')
+    result_ast_true = parse(tokens_true)
+    result_ast_false = parse(tokens_false)
+    assert isinstance(result_ast_true, ast.Literal) and result_ast_true.value is True
+    assert isinstance(result_ast_false, ast.Literal) and result_ast_false.value is False

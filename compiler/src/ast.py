@@ -23,3 +23,10 @@ class BinaryOp(Expression):
     left: Expression
     op: str
     right: Expression
+
+
+@dataclass
+class IfExpression(Expression):
+    condition: Expression
+    then_branch: Expression
+    else_branch: Expression = None  # `else_branch` is optional

@@ -32,6 +32,11 @@ def parse(tokens: list[Token]) -> ast.Expression:
         token = consume()
         return ast.Literal(value=int(token.text))
 
+    def parse_boolean_literal() -> ast.Literal:
+        token = consume()
+        value = True if token.text == 'true' else False
+        return ast.Literal(value=value)
+
     def parse_identifier() -> ast.Identifier:
         token = consume()
         return ast.Identifier(name=token.text)
@@ -47,10 +52,25 @@ def parse(tokens: list[Token]) -> ast.Expression:
             return parse_parenthesized()
         elif peek().type == 'INTEGER':
             return parse_int_literal()
+        elif peek().type == 'BOOLEAN':
+            return parse_boolean_literal()
         elif peek().type == 'IDENTIFIER':
             return parse_identifier()
+        elif peek().type == 'KEYWORD' and peek().text == 'if':
+            return parse_if_expression()
         else:
-            raise ParseException(f'{peek().location}: expected "(", an integer literal, or an identifier')
+            raise ParseException(f'{peek().location}: unexpected token "{peek().text}"')
+
+    def parse_if_expression() -> ast.IfExpression:
+        consume('if')
+        condition = parse_expression()
+        consume('then')
+        then_branch = parse_expression()
+        else_branch = None
+        if peek().text == 'else':
+            consume('else')
+            else_branch = parse_expression()
+        return ast.IfExpression(condition=condition, then_branch=then_branch, else_branch=else_branch)
 
     def parse_term() -> ast.Expression:
         left = parse_factor()
