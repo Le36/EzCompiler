@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 
 @dataclass
@@ -30,3 +31,15 @@ class IfExpression(Expression):
     condition: Expression
     then_branch: Expression
     else_branch: Expression = None  # `else_branch` is optional
+
+
+@dataclass
+class FunctionCall(Expression):
+    name: str
+    arguments: List[Expression]
+
+
+@dataclass
+class UnaryOp(Expression):
+    op: str
+    operand: Expression

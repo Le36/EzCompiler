@@ -33,7 +33,7 @@ def tokenize(source_code: str, file_name: str = 'editor') -> list[Token]:
         'COMMENT': r'//.*|/\*[\s\S]*?\*/|#.*',
         'INTEGER': r'\d+',
         'BOOLEAN': r'\b(true|false)\b',
-        'OPERATOR': r'\+|-|\*|/|%|==|!=|<|<=|>|>=|and|or|not|=',
+        'OPERATOR': r'\*\*|<=|>=|==|!=|\+|-|\*|/|%|<|>|and|or|not|=',
         'PUNCTUATION': r'[(),;{}:]',
         'KEYWORD': r'\b(var|if|then|else|while|do|Int|Boolean)\b',
         'LIBRARY_FUNCTION': r'\b(print_int|read_int|print_bool)\b',

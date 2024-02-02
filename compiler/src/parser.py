@@ -2,6 +2,18 @@ import compiler.src.ast as ast
 
 from compiler.src.tokenizer import Token
 
+operators_precedence = [
+    ['='],
+    ['or'],
+    ['and'],
+    ['==', '!='],
+    ['<', '<=', '>', '>='],
+    ['+', '-'],
+    ['*', '/', '%'],
+]
+
+unary_operators = ['not', '-']
+
 
 class ParseException(Exception):
     pass
@@ -55,11 +67,27 @@ def parse(tokens: list[Token]) -> ast.Expression:
         elif peek().type == 'BOOLEAN':
             return parse_boolean_literal()
         elif peek().type == 'IDENTIFIER':
-            return parse_identifier()
+            identifier = parse_identifier()
+            if peek().text == '(':
+                return parse_function_call(identifier)
+            else:
+                return identifier
         elif peek().type == 'KEYWORD' and peek().text == 'if':
             return parse_if_expression()
         else:
             raise ParseException(f'{peek().location}: unexpected token "{peek().text}"')
+
+    def parse_function_call(identifier: ast.Identifier) -> ast.FunctionCall:
+        consume('(')
+        arguments = []
+        if peek().text != ')':
+            while True:
+                arguments.append(parse_expression())
+                if peek().text == ')':
+                    break
+                consume(',')
+        consume(')')
+        return ast.FunctionCall(name=identifier.name, arguments=arguments)
 
     def parse_if_expression() -> ast.IfExpression:
         consume('if')
@@ -72,34 +100,30 @@ def parse(tokens: list[Token]) -> ast.Expression:
             else_branch = parse_expression()
         return ast.IfExpression(condition=condition, then_branch=then_branch, else_branch=else_branch)
 
-    def parse_term() -> ast.Expression:
-        left = parse_factor()
-        while peek().text in ['*', '/']:
-            operator_token = consume()
-            right = parse_factor()
-            left = ast.BinaryOp(left=left, op=operator_token.text, right=right)
-        return left
+    def parse_expression(precedence=0) -> ast.Expression:
+        if precedence == len(operators_precedence):
+            return parse_unary_expression()
 
-    def parse_expression() -> ast.Expression:
-        left = parse_term()
-        while peek().text in ['+', '-']:
-            operator_token = consume()
-            right = parse_term()
-            left = ast.BinaryOp(left=left, op=operator_token.text, right=right)
-        return left
+        left_expr = parse_expression(precedence + 1)
 
-    def parse_assignment() -> ast.Expression:
-        expr = parse_expression()
-        if peek().text == '=':
-            operator_token = consume('=')
-            value = parse_assignment()
-            expr = ast.BinaryOp(left=expr, op=operator_token.text, right=value)
-        return expr
+        while peek().text in operators_precedence[precedence]:
+            op_token = consume()
+            right_expr = parse_expression(precedence if op_token.text == '=' else precedence + 1)
+            left_expr = ast.BinaryOp(left=left_expr, op=op_token.text, right=right_expr)
+
+        return left_expr
+
+    def parse_unary_expression() -> ast.Expression:
+        if peek().text in unary_operators:
+            operator_token = consume()
+            operand = parse_unary_expression()
+            return ast.UnaryOp(op=operator_token.text, operand=operand)
+        return parse_factor()
 
     if not tokens:
         raise ParseException('Empty input provided')
 
-    result = parse_assignment()
+    result = parse_expression(0)
 
     if pos < len(tokens):
         raise ParseException(f'Unexpected tokens at end of input: {tokens[pos].text}')
