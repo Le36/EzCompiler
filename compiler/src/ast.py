@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -43,3 +43,15 @@ class FunctionCall(Expression):
 class UnaryOp(Expression):
     op: str
     operand: Expression
+
+
+@dataclass
+class Block(Expression):
+    expressions: List[Expression]
+    result_expression: Optional[Expression] = None
+
+
+@dataclass
+class While(Expression):
+    condition: Expression
+    body: Expression

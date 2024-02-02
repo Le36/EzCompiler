@@ -323,3 +323,180 @@ def test_operator_precedence(source_code, expected_ast):
     result_ast = parse(tokens)
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_parse_simple_while_loop():
+    source_code = 'while x < 5 do x = x + 1'
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    expected_ast = ast.While(
+        condition=ast.BinaryOp(
+            left=ast.Identifier(name='x'),
+            op='<',
+            right=ast.Literal(value=5)
+        ),
+        body=ast.BinaryOp(
+            left=ast.Identifier(name='x'),
+            op='=',
+            right=ast.BinaryOp(
+                left=ast.Identifier(name='x'),
+                op='+',
+                right=ast.Literal(value=1)
+            )
+        )
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_parse_while_loop_missing_do_error():
+    source_code = 'while x < 5 x = x + 1'
+    tokens = tokenize(source_code, 'test')
+    with pytest.raises(ParseException):
+        parse(tokens)
+
+
+def test_parse_simple_block():
+    source_code = '{ x = 10; y = 20; 30 }'
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    expected_ast = ast.Block(
+        expressions=[
+            ast.BinaryOp(left=ast.Identifier(name='x'), op='=', right=ast.Literal(value=10)),
+            ast.BinaryOp(left=ast.Identifier(name='y'), op='=', right=ast.Literal(value=20))
+        ],
+        result_expression=ast.Literal(value=30)
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_parse_consecutive_expressions_error():
+    source_code = '{ a b }'
+    tokens = tokenize(source_code, 'test')
+    with pytest.raises(ParseException):
+        parse(tokens)
+
+
+def test_parse_complex_block():
+    source_code = """
+    {
+        while f() do {
+            x = 10;
+            y = if g(x) then {
+                x = x + 1;
+                x
+            } else {
+                g(x)
+            };
+            g(y);
+        };
+        123
+    }
+    """
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    expected_ast = ast.Block(
+        expressions=[
+            ast.While(
+                condition=ast.FunctionCall(name='f', arguments=[]),
+                body=ast.Block(
+                    expressions=[
+                        ast.BinaryOp(left=ast.Identifier(name='x'), op='=', right=ast.Literal(value=10)),
+                        ast.BinaryOp(
+                            left=ast.Identifier(name='y'),
+                            op='=',
+                            right=ast.IfExpression(
+                                condition=ast.FunctionCall(name='g', arguments=[ast.Identifier(name='x')]),
+                                then_branch=ast.Block(
+                                    expressions=[
+                                        ast.BinaryOp(left=ast.Identifier(name='x'), op='=',
+                                                     right=ast.BinaryOp(left=ast.Identifier(name='x'), op='+',
+                                                                        right=ast.Literal(value=1))),
+                                    ],
+                                    result_expression=ast.Identifier(name='x')
+                                ),
+                                else_branch=ast.Block(
+                                    expressions=[],
+                                    result_expression=ast.FunctionCall(name='g', arguments=[ast.Identifier(name='x')])
+                                )
+                            )
+                        ),
+                        ast.FunctionCall(name='g', arguments=[ast.Identifier(name='y')])
+                    ],
+                    result_expression=ast.Literal(value=None)
+                )
+            )
+        ],
+        result_expression=ast.Literal(value=123)
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_parse_block_with_final_semicolon():
+    source_code = "{ f(a); x = y; f(x); }"
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    expected_ast = ast.Block(
+        expressions=[
+            ast.FunctionCall(name='f', arguments=[ast.Identifier(name='a')]),
+            ast.BinaryOp(left=ast.Identifier(name='x'), op='=', right=ast.Identifier(name='y')),
+            ast.FunctionCall(name='f', arguments=[ast.Identifier(name='x')])
+        ],
+        result_expression=ast.Literal(value=None)
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_parse_block_without_final_semicolon():
+    source_code = "{ f(a); x = y; f(x) }"
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    expected_ast = ast.Block(
+        expressions=[
+            ast.FunctionCall(name='f', arguments=[ast.Identifier(name='a')]),
+            ast.BinaryOp(left=ast.Identifier(name='x'), op='=', right=ast.Identifier(name='y'))
+        ],
+        result_expression=ast.FunctionCall(name='f', arguments=[ast.Identifier(name='x')])
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_parse_nested_blocks():
+    source_code = """
+    {
+        if (a) then {
+            f(b);
+        };
+        {
+            g(c);
+            h(d);
+        };
+    }
+    """
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    expected_ast = ast.Block(
+        expressions=[
+            ast.IfExpression(
+                condition=ast.Identifier(name='a'),
+                then_branch=ast.Block(
+                    expressions=[ast.FunctionCall(name='f', arguments=[ast.Identifier(name='b')])],
+                    result_expression=ast.Literal(value=None)
+                )
+            ),
+            ast.Block(
+                expressions=[
+                    ast.FunctionCall(name='g', arguments=[ast.Identifier(name='c')]),
+                    ast.FunctionCall(name='h', arguments=[ast.Identifier(name='d')])
+                ],
+                result_expression=ast.Literal(value=None)
+            )
+        ],
+        result_expression=ast.Literal(value=None)
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'

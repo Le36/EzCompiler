@@ -60,8 +60,11 @@ def parse(tokens: list[Token]) -> ast.Expression:
         return expr
 
     def parse_factor() -> ast.Expression:
-        if peek().text == '(':
-            return parse_parenthesized()
+        if peek().type == 'PUNCTUATION':
+            if peek().text == '(':
+                return parse_parenthesized()
+            elif peek().text == '{':
+                return parse_block()
         elif peek().type == 'INTEGER':
             return parse_int_literal()
         elif peek().type == 'BOOLEAN':
@@ -72,10 +75,43 @@ def parse(tokens: list[Token]) -> ast.Expression:
                 return parse_function_call(identifier)
             else:
                 return identifier
-        elif peek().type == 'KEYWORD' and peek().text == 'if':
-            return parse_if_expression()
+        elif peek().type == 'KEYWORD':
+            if peek().text == 'if':
+                return parse_if_expression()
+            elif peek().text == 'while':
+                return parse_while()
         else:
             raise ParseException(f'{peek().location}: unexpected token "{peek().text}"')
+
+    def parse_block() -> ast.Block:
+        consume('{')
+        expressions = []
+        result_expression = None
+        while peek().text != '}':
+            expr = parse_expression(0)
+            if peek().text == ';':
+                consume(';')
+                expressions.append(expr)  # Add expression before semicolon to expressions list.
+            elif peek().text == '}':
+                result_expression = expr  # Set the last expression as result_expression if '}' follows directly.
+            else:
+                # If there's no semicolon and we're not at the end, it's an error.
+                raise ParseException(f"Expected ';' or '}}', found {peek().text}")
+
+        consume('}')  # Consume the closing brace of the block.
+
+        # If a semicolon was found after the last expression, add a Literal(value=None) as the result expression.
+        if result_expression is None and expressions:
+            result_expression = ast.Literal(value=None)
+
+        return ast.Block(expressions=expressions, result_expression=result_expression)
+
+    def parse_while() -> ast.While:
+        consume('while')
+        condition = parse_expression(0)
+        consume('do')
+        body = parse_expression(0)
+        return ast.While(condition=condition, body=body)
 
     def parse_function_call(identifier: ast.Identifier) -> ast.FunctionCall:
         consume('(')
