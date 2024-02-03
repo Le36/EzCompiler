@@ -1,4 +1,3 @@
-import pytest
 from compiler.main import read_source_code, process_command
 
 

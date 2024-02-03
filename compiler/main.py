@@ -1,4 +1,5 @@
 import sys
+from compiler.src.tokenizer import tokenize
 
 
 def read_source_code(input_file):
@@ -12,13 +13,11 @@ def read_source_code(input_file):
         return sys.stdin.read()
 
 
-def interpret(source_code):
+def interpret(source_code, file_name):
     """
     Function to interpret the source code.
-    TODO: Implement the interpreter logic here.
     """
-    print("Implement the interpreter logic here.")
-    pass
+    return tokenize(source_code, file_name)
 
 
 def process_command(command, input_file=None, source_code=None):
@@ -26,13 +25,12 @@ def process_command(command, input_file=None, source_code=None):
     Processes the given command with either an input file or source code.
     """
     if command == 'interpret':
-        print(input_file)
+        file_name = input_file if input_file else 'editor'
         code_to_process = read_source_code(input_file) if input_file else source_code
-        interpret(code_to_process)
+        return interpret(code_to_process, file_name)
     else:
         print(f"Error: unknown command: {command}")
         return 1
-    return 0
 
 
 def main():
