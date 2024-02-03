@@ -9,8 +9,8 @@ from compiler import main as compiler
 def compile_code():
     code = request.json.get('code', '')
     try:
-        result = compiler.process_command('interpret', source_code=code)
-        return jsonify({"result": result})
+        data = compiler.process_command('interpret', source_code=code)
+        return jsonify({"data": data})
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 

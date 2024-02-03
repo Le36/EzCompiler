@@ -1,15 +1,26 @@
 <template>
-    <div class="parser">
-        <h1>This is a tokenizer page</h1>
+    <div>
+        <NoResult v-if="!codeResult" />
+        <Tokenizer v-else :result="codeResult" />
     </div>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-    .about {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
+<script>
+import {useCompilerStore} from '@/stores/compilerStore'
+import {computed} from 'vue'
+import NoResult from '@/components/NoResult.vue'
+import Tokenizer from '@/components/Tokenizer.vue'
+
+export default {
+    components: {
+        Tokenizer,
+        NoResult,
+    },
+    setup() {
+        const compilerStore = useCompilerStore()
+        const codeResult = computed(() => compilerStore.codeResult)
+
+        return {codeResult}
     }
 }
-</style>
+</script>
