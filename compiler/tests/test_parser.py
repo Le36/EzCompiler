@@ -526,3 +526,91 @@ def test_parse_variable_declaration_outside_block_error():
     with pytest.raises(ParseException):
         parse(tokens)
 
+
+def test_parse_nested_no_semicolon():
+    source_code = '{ { a } { b } }'
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    expected_ast = ast.Block(
+        expressions=[
+            ast.Block(
+                expressions=[],
+                result_expression=ast.Identifier(name='a')
+            ),
+            ast.Block(
+                expressions=[],
+                result_expression=ast.Identifier(name='b')
+            )
+        ],
+        result_expression=ast.Literal(value=None)
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_parse_conditional_with_block():
+    source_code = '{ if true then { a }; b }'
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    expected_ast = ast.Block(
+        expressions=[
+            ast.IfExpression(
+                condition=ast.Literal(value=True),
+                then_branch=ast.Block(
+                    expressions=[],
+                    result_expression=ast.Identifier(name='a')
+                )
+            )
+        ],
+        result_expression=ast.Identifier(name='b')
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_parse_if_with_nested_blocks_no_semicolon():
+    source_code = '{ if true then { a } b }'
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    expected_ast = ast.Block(
+        expressions=[
+            ast.IfExpression(
+                condition=ast.Literal(value=True),
+                then_branch=ast.Block(
+                    expressions=[],
+                    result_expression=ast.Identifier(name='a')
+                )
+            )
+        ],
+        result_expression=ast.Identifier(name='b')
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_parse_assignment_with_nested_blocks():
+    source_code = 'x = { { f(a) } { b } }'
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    expected_ast = ast.BinaryOp(
+        left=ast.Identifier(name='x'),
+        op='=',
+        right=ast.Block(
+            expressions=[
+                ast.Block(
+                    expressions=[],
+                    result_expression=ast.FunctionCall(
+                        name='f',
+                        arguments=[ast.Identifier(name='a')]
+                    )
+                ),
+                ast.Block(
+                    expressions=[],
+                    result_expression=ast.Identifier(name='b')
+                )
+            ],
+            result_expression=ast.Literal(value=None)
+        )
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'

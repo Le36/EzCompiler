@@ -22,10 +22,11 @@ class ParseException(Exception):
 def parse(tokens: list[Token]) -> ast.Expression:
     pos = 0
 
-    def peek() -> Token:
-        if pos >= len(tokens):
+    def peek(offset: int = 0) -> Token:
+        new_pos = pos + offset
+        if new_pos < 0 or new_pos >= len(tokens):
             return Token(location=tokens[-1].location, type="end", text="")
-        return tokens[pos]
+        return tokens[new_pos]
 
     def consume(expected: str | list[str] | None = None) -> Token:
         nonlocal pos
@@ -93,8 +94,9 @@ def parse(tokens: list[Token]) -> ast.Expression:
             else:
                 expr = parse_expression()
 
-            if peek().text == ';':
-                consume(';')
+            if peek().text == ';' or peek(-1).text == '}':
+                if peek().text == ';':
+                    consume(';')
                 expressions.append(expr)
             elif peek().text == '}':
                 result_expression = expr
