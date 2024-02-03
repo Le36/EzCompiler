@@ -357,13 +357,14 @@ def test_parse_while_loop_missing_do_error():
 
 
 def test_parse_simple_block():
-    source_code = '{ x = 10; y = 20; 30 }'
+    source_code = '{ var x = 10; y = x + 1; 30 }'
     tokens = tokenize(source_code, 'test')
     result_ast = parse(tokens)
     expected_ast = ast.Block(
         expressions=[
-            ast.BinaryOp(left=ast.Identifier(name='x'), op='=', right=ast.Literal(value=10)),
-            ast.BinaryOp(left=ast.Identifier(name='y'), op='=', right=ast.Literal(value=20))
+            ast.VarDeclaration(name='x', value=ast.Literal(value=10)),
+            ast.BinaryOp(left=ast.Identifier(name='y'), op='=',
+                         right=ast.BinaryOp(left=ast.Identifier(name='x'), op='+', right=ast.Literal(value=1)))
         ],
         result_expression=ast.Literal(value=30)
     )
@@ -435,14 +436,14 @@ def test_parse_complex_block():
 
 
 def test_parse_block_with_final_semicolon():
-    source_code = "{ f(a); x = y; f(x); }"
+    source_code = '{ var x = 10; x = x + 1; }'
     tokens = tokenize(source_code, 'test')
     result_ast = parse(tokens)
     expected_ast = ast.Block(
         expressions=[
-            ast.FunctionCall(name='f', arguments=[ast.Identifier(name='a')]),
-            ast.BinaryOp(left=ast.Identifier(name='x'), op='=', right=ast.Identifier(name='y')),
-            ast.FunctionCall(name='f', arguments=[ast.Identifier(name='x')])
+            ast.VarDeclaration(name='x', value=ast.Literal(value=10)),
+            ast.BinaryOp(left=ast.Identifier(name='x'), op='=',
+                         right=ast.BinaryOp(left=ast.Identifier(name='x'), op='+', right=ast.Literal(value=1)))
         ],
         result_expression=ast.Literal(value=None)
     )
@@ -500,3 +501,28 @@ def test_parse_nested_blocks():
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_parse_empty_block():
+    source_code = '{}'
+    tokens = tokenize(source_code, 'test')
+    result_ast = parse(tokens)
+    expected_ast = ast.Block(expressions=[], result_expression=None)
+    comparison_result = ast_equal(result_ast, expected_ast)
+
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_parse_block_missing_closing_brace_error():
+    source_code = '{ var x = 123;'
+    tokens = tokenize(source_code, 'test')
+    with pytest.raises(ParseException):
+        parse(tokens)
+
+
+def test_parse_variable_declaration_outside_block_error():
+    source_code = 'var x = 123'
+    tokens = tokenize(source_code, 'test')
+    with pytest.raises(ParseException):
+        parse(tokens)
+

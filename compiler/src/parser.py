@@ -88,19 +88,21 @@ def parse(tokens: list[Token]) -> ast.Expression:
         expressions = []
         result_expression = None
         while peek().text != '}':
-            expr = parse_expression(0)
+            if peek().type == 'KEYWORD' and peek().text == 'var':
+                expr = parse_var_declaration()
+            else:
+                expr = parse_expression()
+
             if peek().text == ';':
                 consume(';')
-                expressions.append(expr)  # Add expression before semicolon to expressions list.
+                expressions.append(expr)
             elif peek().text == '}':
-                result_expression = expr  # Set the last expression as result_expression if '}' follows directly.
+                result_expression = expr
             else:
-                # If there's no semicolon and we're not at the end, it's an error.
                 raise ParseException(f"Expected ';' or '}}', found {peek().text}")
 
-        consume('}')  # Consume the closing brace of the block.
+        consume('}')
 
-        # If a semicolon was found after the last expression, add a Literal(value=None) as the result expression.
         if result_expression is None and expressions:
             result_expression = ast.Literal(value=None)
 
@@ -108,10 +110,19 @@ def parse(tokens: list[Token]) -> ast.Expression:
 
     def parse_while() -> ast.While:
         consume('while')
-        condition = parse_expression(0)
+        condition = parse_expression()
         consume('do')
-        body = parse_expression(0)
+        body = parse_expression()
         return ast.While(condition=condition, body=body)
+
+    def parse_var_declaration() -> ast.VarDeclaration:
+        consume('var')
+        if peek().type != 'IDENTIFIER':
+            raise ParseException(f"Expected variable name after 'var', found {peek().text}")
+        name = parse_identifier()
+        consume('=')
+        value = parse_expression()
+        return ast.VarDeclaration(name=name.name, value=value)
 
     def parse_function_call(identifier: ast.Identifier) -> ast.FunctionCall:
         consume('(')
@@ -159,7 +170,7 @@ def parse(tokens: list[Token]) -> ast.Expression:
     if not tokens:
         raise ParseException('Empty input provided')
 
-    result = parse_expression(0)
+    result = parse_expression()
 
     if pos < len(tokens):
         raise ParseException(f'Unexpected tokens at end of input: {tokens[pos].text}')

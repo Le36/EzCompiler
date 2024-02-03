@@ -55,3 +55,9 @@ class Block(Expression):
 class While(Expression):
     condition: Expression
     body: Expression
+
+
+@dataclass
+class VarDeclaration(Expression):
+    name: str
+    value: Expression
