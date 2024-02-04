@@ -84,11 +84,11 @@ def test_tokenize_exact_location():
     tokens = tokenize('var x = 42\n/* comment \nwelcome*/\n end')
 
     expected = [
-        "Token(text='var', type='KEYWORD', location=SourceLocation(file='editor', line=1, column=1))",
-        "Token(text='x', type='IDENTIFIER', location=SourceLocation(file='editor', line=1, column=5))",
-        "Token(text='=', type='OPERATOR', location=SourceLocation(file='editor', line=1, column=7))",
-        "Token(text='42', type='INTEGER', location=SourceLocation(file='editor', line=1, column=9))",
-        "Token(text='end', type='IDENTIFIER', location=SourceLocation(file='editor', line=4, column=2))"
+        "Token(text='var', type='KEYWORD', location=SourceLocation(line=1, column=1))",
+        "Token(text='x', type='IDENTIFIER', location=SourceLocation(line=1, column=5))",
+        "Token(text='=', type='OPERATOR', location=SourceLocation(line=1, column=7))",
+        "Token(text='42', type='INTEGER', location=SourceLocation(line=1, column=9))",
+        "Token(text='end', type='IDENTIFIER', location=SourceLocation(line=4, column=2))"
     ]
 
     actual = [str(token) for token in tokens]

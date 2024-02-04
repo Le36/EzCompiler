@@ -1,56 +1,59 @@
 import pytest
-from compiler.src.tokenizer import tokenize
+
+from compiler.src.ast import make_literal, make_binary_op, make_identifier, make_function_call, make_if_expression, \
+    make_while, make_block, \
+    make_var_declaration, make_unary_op
 from compiler.src.parser import parse, ParseException
-import compiler.src.ast as ast
+from compiler.src.tokenizer import tokenize
 from compiler.tests.test_ast_utils import ast_equal
 
 
 def test_parse_single_integer():
     source_code = '42'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.Literal(value=42)
+    expected_ast = make_literal(42)
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
 
 
 def test_parse_simple_addition():
     source_code = '1 + 2'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.BinaryOp(left=ast.Literal(value=1), op='+', right=ast.Literal(value=2))
+    expected_ast = make_binary_op(make_literal(1), '+', make_literal(2))
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
 
 
 def test_parse_variable_assignment():
     source_code = 'x = 5'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.BinaryOp(left=ast.Identifier(name='x'), op='=', right=ast.Literal(value=5))
+    expected_ast = make_binary_op(make_identifier('x'), '=', make_literal(5))
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
 
 
 def test_parse_empty_input():
     source_code = ''
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     with pytest.raises(ParseException):
         parse(tokens)
 
 
 def test_parse_complex_expression():
     source_code = '3 + 5 * 2 - 4 / 2'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.BinaryOp(
-        left=ast.BinaryOp(
-            left=ast.Literal(value=3),
-            op='+',
-            right=ast.BinaryOp(left=ast.Literal(value=5), op='*', right=ast.Literal(value=2))
+    expected_ast = make_binary_op(
+        make_binary_op(
+            make_literal(3),
+            '+',
+            make_binary_op(make_literal(5), '*', make_literal(2))
         ),
-        op='-',
-        right=ast.BinaryOp(left=ast.Literal(value=4), op='/', right=ast.Literal(value=2))
+        '-',
+        make_binary_op(make_literal(4), '/', make_literal(2))
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -58,12 +61,16 @@ def test_parse_complex_expression():
 
 def test_parse_right_associative_assignment():
     source_code = 'x = y = 5'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.BinaryOp(
-        left=ast.Identifier(name='x'),
+    expected_ast = make_binary_op(
+        left=make_identifier('x'),
         op='=',
-        right=ast.BinaryOp(left=ast.Identifier(name='y'), op='=', right=ast.Literal(value=5))
+        right=make_binary_op(
+            left=make_identifier('y'),
+            op='=',
+            right=make_literal(5)
+        )
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -71,12 +78,16 @@ def test_parse_right_associative_assignment():
 
 def test_parse_parentheses_precedence():
     source_code = '(3 + 5) * 2'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.BinaryOp(
-        left=ast.BinaryOp(left=ast.Literal(value=3), op='+', right=ast.Literal(value=5)),
+    expected_ast = make_binary_op(
+        left=make_binary_op(
+            left=make_literal(3),
+            op='+',
+            right=make_literal(5)
+        ),
         op='*',
-        right=ast.Literal(value=2)
+        right=make_literal(2)
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -84,33 +95,33 @@ def test_parse_parentheses_precedence():
 
 def test_parse_unexpected_token_error():
     source_code = '3 + * 5'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     with pytest.raises(ParseException):
         parse(tokens)
 
 
 def test_parse_missing_operator():
     source_code = '3 5'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     with pytest.raises(ParseException):
         parse(tokens)
 
 
 def test_parse_unexpected_end_of_input():
     source_code = '3 +'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     with pytest.raises(ParseException):
         parse(tokens)
 
 
 def test_parse_if_then_else():
     source_code = 'if a then b + c else x * y'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.IfExpression(
-        condition=ast.Identifier(name='a'),
-        then_branch=ast.BinaryOp(left=ast.Identifier(name='b'), op='+', right=ast.Identifier(name='c')),
-        else_branch=ast.BinaryOp(left=ast.Identifier(name='x'), op='*', right=ast.Identifier(name='y'))
+    expected_ast = make_if_expression(
+        condition=make_identifier('a'),
+        then_branch=make_binary_op(left=make_identifier('b'), op='+', right=make_identifier('c')),
+        else_branch=make_binary_op(left=make_identifier('x'), op='*', right=make_identifier('y'))
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -118,11 +129,11 @@ def test_parse_if_then_else():
 
 def test_parse_if_then():
     source_code = 'if a then b + c'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.IfExpression(
-        condition=ast.Identifier(name='a'),
-        then_branch=ast.BinaryOp(left=ast.Identifier(name='b'), op='+', right=ast.Identifier(name='c'))
+    expected_ast = make_if_expression(
+        condition=make_identifier('a'),
+        then_branch=make_binary_op(left=make_identifier('b'), op='+', right=make_identifier('c'))
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -130,15 +141,15 @@ def test_parse_if_then():
 
 def test_parse_if_expression_in_arithmetic():
     source_code = '1 + if true then 2 else 3'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.BinaryOp(
-        left=ast.Literal(value=1),
+    expected_ast = make_binary_op(
+        left=make_literal(1),
         op='+',
-        right=ast.IfExpression(
-            condition=ast.Literal(value=True),
-            then_branch=ast.Literal(value=2),
-            else_branch=ast.Literal(value=3)
+        right=make_if_expression(
+            condition=make_literal(True),
+            then_branch=make_literal(2),
+            else_branch=make_literal(3)
         )
     )
     comparison_result = ast_equal(result_ast, expected_ast)
@@ -147,36 +158,36 @@ def test_parse_if_expression_in_arithmetic():
 
 def test_parse_boolean_literal():
     source_code_true = 'true'
-    tokens_true = tokenize(source_code_true, 'test')
+    tokens_true = tokenize(source_code_true)
     result_ast_true = parse(tokens_true)
-    expected_ast_true = ast.Literal(value=True)
+    expected_ast_true = make_literal(True)
     comparison_result = ast_equal(result_ast_true, expected_ast_true)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
 
     source_code_false = 'false'
-    tokens_false = tokenize(source_code_false, 'test')
+    tokens_false = tokenize(source_code_false)
     result_ast_false = parse(tokens_false)
-    expected_ast_false = ast.Literal(value=False)
+    expected_ast_false = make_literal(False)
     comparison_result = ast_equal(result_ast_false, expected_ast_false)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
 
 
 def test_parse_simple_function_call():
     source_code = 'f(x)'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.FunctionCall(name='f', arguments=[ast.Identifier(name='x')])
+    expected_ast = make_function_call('f', [make_identifier('x')])
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
 
 
 def test_parse_function_call_with_multiple_arguments():
     source_code = 'sum(x, y, z)'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.FunctionCall(
-        name='sum',
-        arguments=[ast.Identifier(name='x'), ast.Identifier(name='y'), ast.Identifier(name='z')]
+    expected_ast = make_function_call(
+        'sum',
+        [make_identifier('x'), make_identifier('y'), make_identifier('z')]
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -184,13 +195,13 @@ def test_parse_function_call_with_multiple_arguments():
 
 def test_parse_nested_function_call():
     source_code = 'f(g(x), h(y, z))'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.FunctionCall(
-        name='f',
-        arguments=[
-            ast.FunctionCall(name='g', arguments=[ast.Identifier(name='x')]),
-            ast.FunctionCall(name='h', arguments=[ast.Identifier(name='y'), ast.Identifier(name='z')])
+    expected_ast = make_function_call(
+        'f',
+        [
+            make_function_call('g', [make_identifier('x')]),
+            make_function_call('h', [make_identifier('y'), make_identifier('z')])
         ]
     )
     comparison_result = ast_equal(result_ast, expected_ast)
@@ -199,151 +210,24 @@ def test_parse_nested_function_call():
 
 def test_parse_function_call_in_expression():
     source_code = '1 + f(x)'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.BinaryOp(
-        left=ast.Literal(value=1),
-        op='+',
-        right=ast.FunctionCall(name='f', arguments=[ast.Identifier(name='x')])
+    expected_ast = make_binary_op(
+        make_literal(1),
+        '+',
+        make_function_call('f', [make_identifier('x')])
     )
-    comparison_result = ast_equal(result_ast, expected_ast)
-    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
-
-
-@pytest.mark.parametrize("source_code,expected_ast", [
-    ("1 + 2", ast.BinaryOp(left=ast.Literal(value=1), op='+', right=ast.Literal(value=2))),
-    ("3 * 4", ast.BinaryOp(left=ast.Literal(value=3), op='*', right=ast.Literal(value=4))),
-    ("5 - 2", ast.BinaryOp(left=ast.Literal(value=5), op='-', right=ast.Literal(value=2))),
-    ("6 / 3", ast.BinaryOp(left=ast.Literal(value=6), op='/', right=ast.Literal(value=3))),
-    ("7 % 2", ast.BinaryOp(left=ast.Literal(value=7), op='%', right=ast.Literal(value=2))),
-    ("1 + 2 * 3", ast.BinaryOp(left=ast.Literal(value=1), op='+',
-                               right=ast.BinaryOp(left=ast.Literal(value=2), op='*', right=ast.Literal(value=3)))),
-    ("(1 + 2) * 3",
-     ast.BinaryOp(left=ast.BinaryOp(left=ast.Literal(value=1), op='+', right=ast.Literal(value=2)), op='*',
-                  right=ast.Literal(value=3))),
-])
-def test_arithmetic_operators(source_code, expected_ast):
-    tokens = tokenize(source_code, 'test')
-    result_ast = parse(tokens)
-    comparison_result = ast_equal(result_ast, expected_ast)
-    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
-
-
-@pytest.mark.parametrize("source_code,expected_ast", [
-    ("a == b", ast.BinaryOp(left=ast.Identifier(name='a'), op='==', right=ast.Identifier(name='b'))),
-    ("a != b", ast.BinaryOp(left=ast.Identifier(name='a'), op='!=', right=ast.Identifier(name='b'))),
-    ("a < b", ast.BinaryOp(left=ast.Identifier(name='a'), op='<', right=ast.Identifier(name='b'))),
-    ("a <= b", ast.BinaryOp(left=ast.Identifier(name='a'), op='<=', right=ast.Identifier(name='b'))),
-    ("a > b", ast.BinaryOp(left=ast.Identifier(name='a'), op='>', right=ast.Identifier(name='b'))),
-    ("a >= b", ast.BinaryOp(left=ast.Identifier(name='a'), op='>=', right=ast.Identifier(name='b'))),
-])
-def test_comparison_operators(source_code, expected_ast):
-    tokens = tokenize(source_code, 'test')
-    result_ast = parse(tokens)
-    comparison_result = ast_equal(result_ast, expected_ast)
-    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
-
-
-@pytest.mark.parametrize("source_code,expected_ast", [
-    ("true and false", ast.BinaryOp(left=ast.Literal(value=True), op='and', right=ast.Literal(value=False))),
-    ("true or false", ast.BinaryOp(left=ast.Literal(value=True), op='or', right=ast.Literal(value=False))),
-])
-def test_logical_operators(source_code, expected_ast):
-    tokens = tokenize(source_code, 'test')
-    result_ast = parse(tokens)
-    comparison_result = ast_equal(result_ast, expected_ast)
-    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
-
-
-@pytest.mark.parametrize("source_code,expected_ast", [
-    ("not x", ast.UnaryOp(op='not', operand=ast.Identifier(name='x'))),
-    ("-x", ast.UnaryOp(op='-', operand=ast.Identifier(name='x'))),
-    ("not not x", ast.UnaryOp(op='not', operand=ast.UnaryOp(op='not', operand=ast.Identifier(name='x')))),
-])
-def test_unary_operators(source_code, expected_ast):
-    tokens = tokenize(source_code, 'test')
-    result_ast = parse(tokens)
-    comparison_result = ast_equal(result_ast, expected_ast)
-    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
-
-
-@pytest.mark.parametrize("source_code,expected_ast", [
-    ("1 + 2 * 3 == 7", ast.BinaryOp(
-        ast.BinaryOp(ast.Literal(1), '+', ast.BinaryOp(ast.Literal(2), '*', ast.Literal(3))),
-        '==',
-        ast.Literal(7)
-    )),
-
-    ("a < b and c > d or e == f", ast.BinaryOp(
-        ast.BinaryOp(
-            ast.BinaryOp(ast.Identifier('a'), '<', ast.Identifier('b')),
-            'and',
-            ast.BinaryOp(ast.Identifier('c'), '>', ast.Identifier('d'))
-        ),
-        'or',
-        ast.BinaryOp(ast.Identifier('e'), '==', ast.Identifier('f'))
-    )),
-
-    ("not x + y", ast.BinaryOp(
-        ast.UnaryOp('not', ast.Identifier('x')),
-        '+',
-        ast.Identifier('y')
-    )),
-
-    ("x = y or z", ast.BinaryOp(
-        ast.Identifier('x'),
-        '=',
-        ast.BinaryOp(ast.Identifier('y'), 'or', ast.Identifier('z'))
-    )),
-
-    ("1 + f(2, 3) * 4", ast.BinaryOp(
-        ast.Literal(1),
-        '+',
-        ast.BinaryOp(
-            ast.FunctionCall('f', [ast.Literal(2), ast.Literal(3)]),
-            '*',
-            ast.Literal(4)
-        )
-    )),
-
-    ("not not true == false", ast.BinaryOp(
-        ast.UnaryOp('not', ast.UnaryOp('not', ast.Literal(True))),
-        '==',
-        ast.Literal(False)
-    )),
-
-    ("1 + if a then b else c", ast.BinaryOp(
-        ast.Literal(1),
-        '+',
-        ast.IfExpression(ast.Identifier('a'), ast.Identifier('b'), ast.Identifier('c'))
-    )),
-])
-def test_operator_precedence(source_code, expected_ast):
-    tokens = tokenize(source_code, 'test')
-    result_ast = parse(tokens)
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
 
 
 def test_parse_simple_while_loop():
     source_code = 'while x < 5 do x = x + 1'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.While(
-        condition=ast.BinaryOp(
-            left=ast.Identifier(name='x'),
-            op='<',
-            right=ast.Literal(value=5)
-        ),
-        body=ast.BinaryOp(
-            left=ast.Identifier(name='x'),
-            op='=',
-            right=ast.BinaryOp(
-                left=ast.Identifier(name='x'),
-                op='+',
-                right=ast.Literal(value=1)
-            )
-        )
+    expected_ast = make_while(
+        make_binary_op(make_identifier('x'), '<', make_literal(5)),
+        make_binary_op(make_identifier('x'), '=', make_binary_op(make_identifier('x'), '+', make_literal(1)))
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -351,22 +235,24 @@ def test_parse_simple_while_loop():
 
 def test_parse_while_loop_missing_do_error():
     source_code = 'while x < 5 x = x + 1'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     with pytest.raises(ParseException):
         parse(tokens)
 
 
 def test_parse_simple_block():
     source_code = '{ var x = 10; y = x + 1; 30 }'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.Block(
+    expected_ast = make_block(
         expressions=[
-            ast.VarDeclaration(name='x', value=ast.Literal(value=10)),
-            ast.BinaryOp(left=ast.Identifier(name='y'), op='=',
-                         right=ast.BinaryOp(left=ast.Identifier(name='x'), op='+', right=ast.Literal(value=1)))
+            make_var_declaration('x', make_literal(10)),
+            make_binary_op(
+                make_identifier('y'), '=',
+                make_binary_op(make_identifier('x'), '+', make_literal(1))
+            )
         ],
-        result_expression=ast.Literal(value=30)
+        result_expression=make_literal(30)
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -374,7 +260,7 @@ def test_parse_simple_block():
 
 def test_parse_consecutive_expressions_error():
     source_code = '{ a b }'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     with pytest.raises(ParseException):
         parse(tokens)
 
@@ -395,41 +281,38 @@ def test_parse_complex_block():
         123
     }
     """
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.Block(
+    expected_ast = make_block(
         expressions=[
-            ast.While(
-                condition=ast.FunctionCall(name='f', arguments=[]),
-                body=ast.Block(
+            make_while(
+                make_function_call('f', []),
+                make_block(
                     expressions=[
-                        ast.BinaryOp(left=ast.Identifier(name='x'), op='=', right=ast.Literal(value=10)),
-                        ast.BinaryOp(
-                            left=ast.Identifier(name='y'),
-                            op='=',
-                            right=ast.IfExpression(
-                                condition=ast.FunctionCall(name='g', arguments=[ast.Identifier(name='x')]),
-                                then_branch=ast.Block(
-                                    expressions=[
-                                        ast.BinaryOp(left=ast.Identifier(name='x'), op='=',
-                                                     right=ast.BinaryOp(left=ast.Identifier(name='x'), op='+',
-                                                                        right=ast.Literal(value=1))),
-                                    ],
-                                    result_expression=ast.Identifier(name='x')
+                        make_binary_op(make_identifier('x'), '=', make_literal(10)),
+                        make_binary_op(
+                            make_identifier('y'), '=',
+                            make_if_expression(
+                                make_function_call('g', [make_identifier('x')]),
+                                make_block(
+                                    expressions=[make_binary_op(make_identifier('x'), '=',
+                                                                make_binary_op(make_identifier('x'), '+',
+                                                                               make_literal(1)))],
+                                    result_expression=make_identifier('x')
                                 ),
-                                else_branch=ast.Block(
+                                make_block(
                                     expressions=[],
-                                    result_expression=ast.FunctionCall(name='g', arguments=[ast.Identifier(name='x')])
+                                    result_expression=make_function_call('g', [make_identifier('x')])
                                 )
                             )
                         ),
-                        ast.FunctionCall(name='g', arguments=[ast.Identifier(name='y')])
+                        make_function_call('g', [make_identifier('y')])
                     ],
-                    result_expression=ast.Literal(value=None)
+                    result_expression=make_literal(None)
                 )
             )
         ],
-        result_expression=ast.Literal(value=123)
+        result_expression=make_literal(123)
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -437,15 +320,14 @@ def test_parse_complex_block():
 
 def test_parse_block_with_final_semicolon():
     source_code = '{ var x = 10; x = x + 1; }'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.Block(
+    expected_ast = make_block(
         expressions=[
-            ast.VarDeclaration(name='x', value=ast.Literal(value=10)),
-            ast.BinaryOp(left=ast.Identifier(name='x'), op='=',
-                         right=ast.BinaryOp(left=ast.Identifier(name='x'), op='+', right=ast.Literal(value=1)))
+            make_var_declaration('x', make_literal(10)),
+            make_binary_op(make_identifier('x'), '=', make_binary_op(make_identifier('x'), '+', make_literal(1)))
         ],
-        result_expression=ast.Literal(value=None)
+        result_expression=make_literal(None)
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -453,14 +335,14 @@ def test_parse_block_with_final_semicolon():
 
 def test_parse_block_without_final_semicolon():
     source_code = "{ f(a); x = y; f(x) }"
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.Block(
+    expected_ast = make_block(
         expressions=[
-            ast.FunctionCall(name='f', arguments=[ast.Identifier(name='a')]),
-            ast.BinaryOp(left=ast.Identifier(name='x'), op='=', right=ast.Identifier(name='y'))
+            make_function_call('f', [make_identifier('a')]),
+            make_binary_op(make_identifier('x'), '=', make_identifier('y'))
         ],
-        result_expression=ast.FunctionCall(name='f', arguments=[ast.Identifier(name='x')])
+        result_expression=make_function_call('f', [make_identifier('x')])
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -478,26 +360,24 @@ def test_parse_nested_blocks():
         };
     }
     """
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.Block(
+    expected_ast = make_block(
         expressions=[
-            ast.IfExpression(
-                condition=ast.Identifier(name='a'),
-                then_branch=ast.Block(
-                    expressions=[ast.FunctionCall(name='f', arguments=[ast.Identifier(name='b')])],
-                    result_expression=ast.Literal(value=None)
-                )
+            make_if_expression(
+                make_identifier('a'),
+                make_block(expressions=[make_function_call('f', [make_identifier('b')])],
+                           result_expression=make_literal(None))
             ),
-            ast.Block(
+            make_block(
                 expressions=[
-                    ast.FunctionCall(name='g', arguments=[ast.Identifier(name='c')]),
-                    ast.FunctionCall(name='h', arguments=[ast.Identifier(name='d')])
+                    make_function_call('g', [make_identifier('c')]),
+                    make_function_call('h', [make_identifier('d')])
                 ],
-                result_expression=ast.Literal(value=None)
+                result_expression=make_literal(None)
             )
         ],
-        result_expression=ast.Literal(value=None)
+        result_expression=make_literal(None)
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -505,44 +385,43 @@ def test_parse_nested_blocks():
 
 def test_parse_empty_block():
     source_code = '{}'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.Block(expressions=[], result_expression=None)
+    expected_ast = make_block(expressions=[], result_expression=None)
     comparison_result = ast_equal(result_ast, expected_ast)
-
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
 
 
 def test_parse_block_missing_closing_brace_error():
     source_code = '{ var x = 123;'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     with pytest.raises(ParseException):
         parse(tokens)
 
 
 def test_parse_variable_declaration_outside_block_error():
     source_code = 'var x = 123'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     with pytest.raises(ParseException):
         parse(tokens)
 
 
 def test_parse_nested_no_semicolon():
     source_code = '{ { a } { b } }'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.Block(
+    expected_ast = make_block(
         expressions=[
-            ast.Block(
+            make_block(
                 expressions=[],
-                result_expression=ast.Identifier(name='a')
+                result_expression=make_identifier('a')
             ),
-            ast.Block(
+            make_block(
                 expressions=[],
-                result_expression=ast.Identifier(name='b')
+                result_expression=make_identifier('b')
             )
         ],
-        result_expression=ast.Literal(value=None)
+        result_expression=make_literal(None)
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -550,19 +429,19 @@ def test_parse_nested_no_semicolon():
 
 def test_parse_conditional_with_block():
     source_code = '{ if true then { a }; b }'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.Block(
+    expected_ast = make_block(
         expressions=[
-            ast.IfExpression(
-                condition=ast.Literal(value=True),
-                then_branch=ast.Block(
+            make_if_expression(
+                condition=make_literal(True),
+                then_branch=make_block(
                     expressions=[],
-                    result_expression=ast.Identifier(name='a')
+                    result_expression=make_identifier('a')
                 )
             )
         ],
-        result_expression=ast.Identifier(name='b')
+        result_expression=make_identifier('b')
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -570,19 +449,19 @@ def test_parse_conditional_with_block():
 
 def test_parse_if_with_nested_blocks_no_semicolon():
     source_code = '{ if true then { a } b }'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.Block(
+    expected_ast = make_block(
         expressions=[
-            ast.IfExpression(
-                condition=ast.Literal(value=True),
-                then_branch=ast.Block(
+            make_if_expression(
+                condition=make_literal(True),
+                then_branch=make_block(
                     expressions=[],
-                    result_expression=ast.Identifier(name='a')
+                    result_expression=make_identifier('a')
                 )
             )
         ],
-        result_expression=ast.Identifier(name='b')
+        result_expression=make_identifier('b')
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
@@ -590,27 +469,66 @@ def test_parse_if_with_nested_blocks_no_semicolon():
 
 def test_parse_assignment_with_nested_blocks():
     source_code = 'x = { { f(a) } { b } }'
-    tokens = tokenize(source_code, 'test')
+    tokens = tokenize(source_code)
     result_ast = parse(tokens)
-    expected_ast = ast.BinaryOp(
-        left=ast.Identifier(name='x'),
+    expected_ast = make_binary_op(
+        left=make_identifier('x'),
         op='=',
-        right=ast.Block(
+        right=make_block(
             expressions=[
-                ast.Block(
+                make_block(
                     expressions=[],
-                    result_expression=ast.FunctionCall(
+                    result_expression=make_function_call(
                         name='f',
-                        arguments=[ast.Identifier(name='a')]
+                        arguments=[make_identifier('a')]
                     )
                 ),
-                ast.Block(
+                make_block(
                     expressions=[],
-                    result_expression=ast.Identifier(name='b')
+                    result_expression=make_identifier('b')
                 )
             ],
-            result_expression=ast.Literal(value=None)
+            result_expression=make_literal(None)
         )
     )
     comparison_result = ast_equal(result_ast, expected_ast)
     assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_function_call_argument_error():
+    source_code = 'f(a b)'
+    tokens = tokenize(source_code)
+    with pytest.raises(ParseException) as exc_info:
+        parse(tokens)
+    assert "Expected a ',' between function arguments or a ')' to close the function call" in str(exc_info.value)
+
+
+def test_unary_expression_parsing():
+    source_code = 'not not x'
+    tokens = tokenize(source_code)
+    result_ast = parse(tokens)
+    expected_ast = make_unary_op(
+        op='not',
+        operand=make_unary_op(
+            op='not',
+            operand=make_identifier('x')
+        )
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_var_declaration_error():
+    source_code = '{var = 123}'
+    tokens = tokenize(source_code)
+    with pytest.raises(ParseException) as exc_info:
+        parse(tokens)
+    assert "Expected variable name after 'var'" in str(exc_info.value)
+
+
+def test_var_declaration_outside_block():
+    source_code = 'var x = 123'
+    tokens = tokenize(source_code)
+    with pytest.raises(ParseException) as exc_info:
+        parse(tokens)
+    assert "'var' declarations are only allowed inside blocks" in str(exc_info.value)

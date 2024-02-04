@@ -17,7 +17,7 @@ def read_source_code(input_file):
 
 def interpret(source_code, file_name):
     try:
-        tokens = tokenize(source_code, file_name)
+        tokens = tokenize(source_code)
         ast = parse(tokens)
         return {'ast': ast, 'tokens': tokens}
     except ParseException as e:

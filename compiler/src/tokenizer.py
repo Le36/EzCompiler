@@ -4,7 +4,6 @@ from dataclasses import dataclass
 
 @dataclass
 class SourceLocation:
-    file: str
     line: int
     column: int
 
@@ -12,7 +11,7 @@ class SourceLocation:
         return isinstance(other, SourceLocation) or other is L
 
 
-L = SourceLocation(file='any', line=-1, column=-1)
+L = SourceLocation(line=-1, column=-1)
 
 
 @dataclass
@@ -28,7 +27,7 @@ class Token:
         return False
 
 
-def tokenize(source_code: str, file_name: str = 'editor') -> list[Token]:
+def tokenize(source_code: str) -> list[Token]:
     token_patterns = {
         'COMMENT': r'//.*|/\*[\s\S]*?\*/|#.*',
         'INTEGER': r'\d+',
@@ -61,7 +60,7 @@ def tokenize(source_code: str, file_name: str = 'editor') -> list[Token]:
             column = end - source_code.rfind('\n', 0, end)
         else:
             if token_type not in ['WHITESPACE', 'COMMENT', 'UNKNOWN']:
-                location = SourceLocation(file_name, line, column)
+                location = SourceLocation(line, column)
                 tokens.append(Token(text=token, type=token_type, location=location))
             column += end - start
 
