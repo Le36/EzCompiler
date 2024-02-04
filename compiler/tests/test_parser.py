@@ -532,3 +532,113 @@ def test_var_declaration_outside_block():
     with pytest.raises(ParseException) as exc_info:
         parse(tokens)
     assert "'var' declarations are only allowed inside blocks" in str(exc_info.value)
+
+
+def test_single_expression_without_block():
+    source_code = '1 + 1'
+    tokens = tokenize(source_code)
+    result_ast = parse(tokens)
+    expected_ast = make_binary_op(
+        make_literal(1),
+        '+',
+        make_literal(1)
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_multiple_expressions_with_block():
+    source_code = '1 + 1; 2 + 2'
+    tokens = tokenize(source_code)
+    result_ast = parse(tokens)
+    expected_ast = make_block(
+        expressions=[
+            make_binary_op(
+                make_literal(1),
+                '+',
+                make_literal(1)
+            )
+        ],
+        result_expression=make_binary_op(
+            make_literal(2),
+            '+',
+            make_literal(2)
+        )
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_single_expression_with_semicolon_wrapped_in_block():
+    source_code = '1 + 1;'
+    tokens = tokenize(source_code)
+    result_ast = parse(tokens)
+    expected_ast = make_block(
+        expressions=[
+            make_binary_op(
+                make_literal(1),
+                '+',
+                make_literal(1)
+            )
+        ],
+        result_expression=make_literal(None)
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_top_level_expressions_with_inner_block():
+    source_code = '1 + 2; { b; }; 3 + 4'
+    tokens = tokenize(source_code)
+    result_ast = parse(tokens)
+    expected_ast = make_block(
+        expressions=[
+            make_binary_op(
+                make_literal(1),
+                '+',
+                make_literal(2)
+            ),
+            make_block(
+                expressions=[
+                    make_identifier('b')
+                ],
+                result_expression=make_literal(None)
+            )
+        ],
+        result_expression=make_binary_op(
+            make_literal(3),
+            '+',
+            make_literal(4)
+        )
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'
+
+
+def test_top_level_expressions_with_inner_block_and_trailing_semicolon():
+    source_code = '1 + 2; { b; }; 3 + 4;'
+    tokens = tokenize(source_code)
+    result_ast = parse(tokens)
+    expected_ast = make_block(
+        expressions=[
+            make_binary_op(
+                make_literal(1),
+                '+',
+                make_literal(2)
+            ),
+            make_block(
+                expressions=[
+                    make_identifier('b')
+                ],
+                result_expression=make_literal(None)
+            ),
+            make_binary_op(
+                make_literal(3),
+                '+',
+                make_literal(4)
+            )
+        ],
+        result_expression=make_literal(None)
+    )
+    comparison_result = ast_equal(result_ast, expected_ast)
+    assert comparison_result == '', f'ASTs do not match:\n{comparison_result}'

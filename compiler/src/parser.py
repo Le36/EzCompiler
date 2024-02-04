@@ -1,6 +1,7 @@
 import compiler.src.ast as ast
+from compiler.src.ast import Expression, Block
 
-from compiler.src.tokenizer import Token
+from compiler.src.tokenizer import Token, SourceLocation
 
 operators_precedence = [
     ['='],
@@ -181,10 +182,29 @@ def parse(tokens: list[Token]) -> ast.Expression:
             return ast.UnaryOp(op=operator_token.text, operand=operand, location=operator_token.location)
         return parse_factor()
 
+    def parse_program() -> Expression | Block:
+        expressions = []
+        while pos < len(tokens):
+            expr = parse_expression()
+            expressions.append(expr)
+            if peek().type == "end" or peek().text != ';':
+                break
+            consume(';')
+
+        if expressions and peek(-1).text != ";":
+            result_expression = expressions.pop()
+        else:
+            result_expression = ast.Literal(value=None, location=expressions[0].location)
+
+        if not expressions and result_expression:
+            return result_expression
+
+        return ast.Block(expressions=expressions, result_expression=result_expression, location=tokens[0].location)
+
     if not tokens:
         raise ParseException('Empty input provided')
 
-    result = parse_expression()
+    result = parse_program()
 
     if pos < len(tokens):
         raise ParseException(f'Unexpected tokens at end of input: {tokens[pos].text}')
