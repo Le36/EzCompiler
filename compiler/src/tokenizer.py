@@ -35,7 +35,6 @@ def tokenize(source_code: str) -> list[Token]:
         'OPERATOR': r'\*\*|<=|>=|==|!=|\+|-|\*|/|%|<|>|and|or|not|=',
         'PUNCTUATION': r'[(),;{}:]',
         'KEYWORD': r'\b(var|if|then|else|while|do|Int|Boolean)\b',
-        'LIBRARY_FUNCTION': r'\b(print_int|read_int|print_bool)\b',
         'IDENTIFIER': r'[a-zA-Z_][a-zA-Z_0-9]*',
         'WHITESPACE': r'\s+',
         'UNKNOWN': r'.',

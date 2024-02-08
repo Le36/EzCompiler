@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div id="editor" style="height: 300px; width: 300px"></div>
-        <button @click="submitCode">Submit</button>
+        <div id='editor'></div>
+        <button @click='submitCode'>Submit</button>
     </div>
 </template>
 
@@ -36,4 +36,9 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+#editor {
+    height: 450px;
+    width: 100%;
+}
+</style>

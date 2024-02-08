@@ -148,15 +148,6 @@ def test_tokenize_while_loop():
     ]
 
 
-def test_tokenize_lib_function_call():
-    assert tokenize("print_int(x)") == [
-        Token(text='print_int', type='LIBRARY_FUNCTION', location=L),
-        Token(text='(', type='PUNCTUATION', location=L),
-        Token(text='x', type='IDENTIFIER', location=L),
-        Token(text=')', type='PUNCTUATION', location=L)
-    ]
-
-
 def test_tokenize_assignment_statement():
     assert tokenize("x = 3 * 4") == [
         Token(text='x', type='IDENTIFIER', location=L),

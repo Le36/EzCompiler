@@ -9,7 +9,7 @@
 import {useCompilerStore} from '@/stores/compilerStore'
 import {computed} from 'vue'
 import NoResult from '@/components/NoResult.vue'
-import Tokenizer from '@/components/Tokenizer.vue'
+import Tokenizer from '@/components/TokenizerList.vue'
 
 export default {
     components: {
