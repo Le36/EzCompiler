@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div id='editor'></div>
-        <button @click='submitCode'>Submit</button>
+        <div id="editor"></div>
+        <button @click="submitCode">Submit</button>
     </div>
 </template>
 
@@ -20,7 +20,7 @@ export default {
     },
     mounted() {
         this.editor = ace.edit('editor')
-        this.editor.setTheme('ace/theme/monokai')
+        this.editor.setTheme('ace/theme/clouds_midnight')
         this.editor.session.setMode('ace/mode/javascript')
     },
     methods: {

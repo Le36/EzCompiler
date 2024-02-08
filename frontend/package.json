@@ -17,6 +17,7 @@
     "ace-builds": "^1.32.5",
     "axios": "^1.6.7",
     "pinia": "^2.1.7",
+    "vis-network": "^9.1.9",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5"
   },

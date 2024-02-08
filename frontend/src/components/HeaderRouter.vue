@@ -14,9 +14,9 @@ defineProps({
         <h1 class="green">{{ msg }}</h1>
         <h3>Try custom compiler here</h3>
         <nav>
-            <RouterLink to="/">Result</RouterLink>
+            <RouterLink to="/">Interpreter</RouterLink>
             <RouterLink to="/tokenizer">Tokenizer</RouterLink>
-            <RouterLink to="/parser">Parser</RouterLink>
+            <RouterLink to="/ast">AST Tree</RouterLink>
         </nav>
     </div>
 </template>

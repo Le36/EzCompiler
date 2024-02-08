@@ -12,9 +12,9 @@ const routes = [
         component: () => import('../views/TokenizerView.vue')
     },
     {
-        path: '/parser',
-        name: 'parser',
-        component: () => import('../views/ParserView.vue')
+        path: '/ast',
+        name: 'ast',
+        component: () => import('../views/AstView.vue')
     }
 ]
 

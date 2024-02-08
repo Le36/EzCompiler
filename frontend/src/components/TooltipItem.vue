@@ -1,14 +1,13 @@
 <template>
-    <div class='tooltip' @mouseover='show = true' @mouseleave='show = false'>
+    <div class="tooltip" @mouseover="show = true" @mouseleave="show = false">
         <slot></slot>
-        <transition @before-enter='beforeEnter' @enter='enter' @leave='leave'>
-            <div v-if='show' class='tooltip-content'>
-                <slot name='content'></slot>
+        <transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
+            <div v-if="show" class="tooltip-content">
+                <slot name="content"></slot>
             </div>
         </transition>
     </div>
 </template>
-
 
 <script>
 export default {
@@ -36,7 +35,6 @@ export default {
 }
 </script>
 
-
 <style>
 .tooltip {
     position: relative;
@@ -61,7 +59,7 @@ export default {
 }
 
 .tooltip-content::after {
-    content: " ";
+    content: ' ';
     position: absolute;
     top: 100%;
     left: 15%;

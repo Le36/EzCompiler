@@ -1,7 +1,7 @@
 <template>
     <div>
         <NoResult v-if="!codeResult" />
-        <Tokenizer v-else :result="codeResult" />
+        <AstTree v-else :astData="codeResult.data.ast" />
     </div>
 </template>
 
@@ -9,11 +9,11 @@
 import {useCompilerStore} from '@/stores/compilerStore'
 import {computed} from 'vue'
 import NoResult from '@/components/NoResult.vue'
-import Tokenizer from '@/components/TokenizerList.vue'
+import AstTree from '@/components/AstTree.vue'
 
 export default {
     components: {
-        Tokenizer,
+        AstTree,
         NoResult
     },
     setup() {

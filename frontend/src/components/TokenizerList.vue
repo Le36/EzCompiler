@@ -1,17 +1,17 @@
 <template>
-    <div class='tokens-view'>
-        <h3 class='green'>Tokenizer results:</h3>
-        <div class='tokens-scrollable'>
+    <div class="tokens-view">
+        <h3 class="green">Tokenizer results:</h3>
+        <div class="tokens-scrollable">
             <ul>
-                <li v-for='(token, index) in result.data.tokens' :key='index'>
+                <li v-for="(token, index) in result.data.tokens" :key="index">
                     <Tooltip>
                         <template v-slot:default>
-                            <div class='token-display'>
-                                <div class='token-info'>
-                                    <font-awesome-icon :icon='getIconForType(token.type)' class='token-icon' />
-                                    <span class='token-type'>{{ token.type.toLowerCase() }}</span>
+                            <div class="token-display">
+                                <div class="token-info">
+                                    <font-awesome-icon :icon="getIconForType(token.type)" class="token-icon" />
+                                    <span class="token-type">{{ token.type.toLowerCase() }}</span>
                                 </div>
-                                <span class='token-value'>{{ token.text }}</span>
+                                <span class="token-value">{{ token.text }}</span>
                             </div>
                         </template>
                         <template v-slot:content>
@@ -40,12 +40,12 @@ export default {
     methods: {
         getIconForType(type) {
             const icons = {
-                'INTEGER': faHashtag,
-                'BOOLEAN': faCheck,
-                'OPERATOR': faPlus,
-                'PUNCTUATION': faCode,
-                'KEYWORD': faKeyboard,
-                'IDENTIFIER': faIdBadge
+                INTEGER: faHashtag,
+                BOOLEAN: faCheck,
+                OPERATOR: faPlus,
+                PUNCTUATION: faCode,
+                KEYWORD: faKeyboard,
+                IDENTIFIER: faIdBadge
             }
             return icons[type]
         }
@@ -113,5 +113,4 @@ ul {
         transition: color 0.3s;
     }
 }
-
 </style>

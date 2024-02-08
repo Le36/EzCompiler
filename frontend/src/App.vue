@@ -5,12 +5,12 @@ import CodeEditor from '@/components/CodeEditor.vue'
 </script>
 
 <template>
-    <HeaderRouter msg='Custom Compiler' />
-    <div class='wrapper'>
-        <div class='left-panel'>
+    <HeaderRouter msg="Custom Compiler" />
+    <div class="wrapper">
+        <div class="left-panel">
             <CodeEditor />
         </div>
-        <div class='right-panel'>
+        <div class="right-panel">
             <RouterView />
         </div>
     </div>
@@ -32,16 +32,17 @@ import CodeEditor from '@/components/CodeEditor.vue'
         margin-top: 1rem;
     }
 
-    .left-panel, .right-panel {
+    .left-panel,
+    .right-panel {
         width: 300px;
         height: 500px;
     }
 }
 
-.left-panel, .right-panel {
+.left-panel,
+.right-panel {
     border: #00bd7e 1px solid;
     width: 500px;
     height: 500px;
 }
-
 </style>
