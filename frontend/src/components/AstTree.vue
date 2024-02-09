@@ -1,5 +1,5 @@
 <template>
-    <div ref="astContainer" class="ast-container"></div>
+    <div ref='astContainer' class='ast-container'></div>
 </template>
 
 <script>
@@ -10,6 +10,12 @@ export default {
     data() {
         return {
             network: null
+        }
+    },
+    watch: {
+        astData() {
+            this.network.destroy()
+            this.createASTVisualization()
         }
     },
     mounted() {

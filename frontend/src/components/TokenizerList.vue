@@ -1,6 +1,5 @@
 <template>
     <div class="tokens-view">
-        <h3 class="green">Tokenizer results:</h3>
         <div class="tokens-scrollable">
             <ul>
                 <li v-for="(token, index) in result.data.tokens" :key="index">
@@ -59,8 +58,8 @@ export default {
 }
 
 .tokens-scrollable {
-    max-height: 500px;
-    min-width: 250px;
+    max-height: 498px;
+    width: 500px;
     padding: 35px 10px 35px 10px;
     overflow-y: auto;
 }

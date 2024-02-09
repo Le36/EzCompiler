@@ -45,4 +45,10 @@ import CodeEditor from '@/components/CodeEditor.vue'
     width: 500px;
     height: 500px;
 }
+
+.right-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 </style>

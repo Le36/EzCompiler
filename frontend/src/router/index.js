@@ -3,8 +3,8 @@ import {createRouter, createWebHistory} from 'vue-router'
 const routes = [
     {
         path: '/',
-        name: 'result',
-        component: () => import('../views/ResultView.vue')
+        name: 'interpreter',
+        component: () => import('../views/InterpreterView.vue')
     },
     {
         path: '/tokenizer',
