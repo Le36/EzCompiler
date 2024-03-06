@@ -1,7 +1,7 @@
 <template>
     <div>
-        <NoResult v-if="!codeResult" />
-        <Tokenizer v-else :result="codeResult" />
+        <NoResult v-if="compilerOutput.error || !compilerOutput.compilation" :errorMessage="compilerOutput.error" />
+        <Tokenizer v-else :result="compilerOutput.compilation" />
     </div>
 </template>
 
@@ -18,9 +18,9 @@ export default {
     },
     setup() {
         const compilerStore = useCompilerStore()
-        const codeResult = computed(() => compilerStore.codeResult)
+        const compilerOutput = computed(() => compilerStore)
 
-        return {codeResult}
+        return {compilerOutput}
     }
 }
 </script>

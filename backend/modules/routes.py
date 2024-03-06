@@ -10,7 +10,7 @@ def compile_code():
     code = request.json.get('code', '')
     try:
         data = compiler.process_command('interpret', source_code=code)
-        return jsonify({"data": data})
+        return jsonify(data)
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 

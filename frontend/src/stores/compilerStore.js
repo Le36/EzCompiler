@@ -2,11 +2,17 @@ import {defineStore} from 'pinia'
 
 export const useCompilerStore = defineStore('compilerStore', {
     state: () => ({
-        codeResult: ''
+        compilation: null,
+        error: null
     }),
     actions: {
-        setCodeResult(newResult) {
-            this.codeResult = newResult
+        setCompilationSuccess(newResult) {
+            this.compilation = newResult
+            this.error = null
+        },
+        setCompilationError(newError) {
+            this.error = newError
+            this.compilation = null
         }
     }
 })

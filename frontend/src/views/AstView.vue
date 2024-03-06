@@ -1,7 +1,7 @@
 <template>
     <div>
-        <NoResult v-if="!codeResult" />
-        <AstTree v-else :astData="codeResult.data.ast" />
+        <NoResult v-if="compilerOutput.error || !compilerOutput.compilation" :errorMessage="compilerOutput.error" />
+        <AstTree v-else :astData="compilerOutput.compilation.data.ast" />
     </div>
 </template>
 
@@ -18,9 +18,9 @@ export default {
     },
     setup() {
         const compilerStore = useCompilerStore()
-        const codeResult = computed(() => compilerStore.codeResult)
+        const compilerOutput = computed(() => compilerStore)
 
-        return {codeResult}
+        return {compilerOutput}
     }
 }
 </script>

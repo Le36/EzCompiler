@@ -1,15 +1,14 @@
 <template>
-    <div class="console-container">
-        <div class="console-output" ref="consoleOutput">
-            <div v-for="(line, index) in lines" :key="index" class="console-line">{{ line }}</div>
+    <div class="console-window">
+        <div class="console-titlebar">
+            <span class="title">Console Output</span>
+            <button class="close-btn" @click="clearConsole">X</button>
         </div>
-        <input
-            type="text"
-            class="console-input"
-            v-model="currentInput"
-            @keyup.enter="handleInput"
-            placeholder="Enter command..."
-        />
+        <div class="console-container">
+            <div class="console-output" ref="consoleOutput">
+                <div v-for="(line, index) in lines" :key="index" class="console-line">{{ line }}</div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -28,44 +27,65 @@ export default {
                 const outputContainer = this.$refs.consoleOutput
                 outputContainer.scrollTop = outputContainer.scrollHeight
             })
+        },
+        clearConsole() {
+            this.lines = []
         }
     }
 }
 </script>
 
 <style scoped>
-.console-container {
-    background-color: #333319;
-    color: #e5ffff;
-    border: #e5ffff 1px solid;
+.console-window {
+    border: #00bd7e 1px solid;
+    width: 400px;
     font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.console-titlebar {
+    background-color: #3a3a3a;
+    color: #00bd7e;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    cursor: default;
+}
+
+.console-titlebar .title {
+    font-weight: bold;
+}
+
+.console-titlebar .close-btn {
+    color: #00bd7e;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.console-container {
+    background-color: #000000;
+    color: #00bd7e;
+    border-top: #00bd7e 1px solid;
     padding: 10px;
     height: 300px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    scrollbar-color: #e5ffff transparent;
-    scrollbar-width: thin;
+    overflow: hidden;
 }
 
 .console-output {
     flex-grow: 1;
-    overflow-y: auto;
-}
-
-.console-input {
-    background-color: #333319;
-    border: #e5ffff 1px solid;
-    color: #e5ffff;
-    padding: 5px;
-    font-family: inherit;
-}
-
-.console-input:focus {
-    outline: none;
+    scrollbar-color: #00bd7e transparent;
+    scrollbar-width: thin;
+    overflow: auto;
 }
 
 .console-line {
-    white-space: pre;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 </style>

@@ -21,7 +21,7 @@ def interpret(source_code, file_name):
         ast = parse(tokens)
         return {'ast': ast, 'tokens': tokens}
     except ParseException as e:
-        return str(e)
+        return {'error': str(e)}
 
 
 def process_command(command, input_file=None, source_code=None):

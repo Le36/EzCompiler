@@ -109,7 +109,7 @@ def parse(tokens: list[Token]) -> ast.Expression:
             elif peek().text == '}':
                 result_expression = expr
             else:
-                raise ParseException(f"Expected ';' or '}}', found {peek().text}")
+                raise ParseException(f"Error at {peek().location}: Expected ';' or '}}', found {peek().text}")
 
         consume('}')
 
@@ -129,7 +129,7 @@ def parse(tokens: list[Token]) -> ast.Expression:
     def parse_var_declaration() -> ast.VarDeclaration:
         var_token = consume('var')
         if peek().type != 'IDENTIFIER':
-            raise ParseException(f"Expected variable name after 'var', found {peek().text}")
+            raise ParseException(f"Error at {peek().location}: Expected variable name after 'var', found {peek().text}")
         name = parse_identifier()
         consume('=')
         value = parse_expression()
