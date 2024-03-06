@@ -1,14 +1,14 @@
 <template>
-    <div class='console-container'>
-        <div class='console-output' ref='consoleOutput'>
-            <div v-for='(line, index) in lines' :key='index' class='console-line'>{{ line }}</div>
+    <div class="console-container">
+        <div class="console-output" ref="consoleOutput">
+            <div v-for="(line, index) in lines" :key="index" class="console-line">{{ line }}</div>
         </div>
         <input
-            type='text'
-            class='console-input'
-            v-model='currentInput'
-            @keyup.enter='handleInput'
-            placeholder='Enter command...'
+            type="text"
+            class="console-input"
+            v-model="currentInput"
+            @keyup.enter="handleInput"
+            placeholder="Enter command..."
         />
     </div>
 </template>
@@ -28,14 +28,7 @@ export default {
                 const outputContainer = this.$refs.consoleOutput
                 outputContainer.scrollTop = outputContainer.scrollHeight
             })
-        },
-        handleInput() {
-            this.$emit('inputReceived', this.currentInput)
-            this.currentInput = ''
         }
-    },
-    mounted() {
-        this.printLine('Welcome to the console!')
     }
 }
 </script>

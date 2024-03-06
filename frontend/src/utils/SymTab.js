@@ -16,6 +16,16 @@ class SymTab {
         currentScope[name] = value
     }
 
+    updateVar(name, value) {
+        for (let i = this.scopes.length - 1; i >= 0; i--) {
+            if (name in this.scopes[i]) {
+                this.scopes[i][name] = value
+                return
+            }
+        }
+        console.error(`Variable ${name} not defined`)
+    }
+
     lookupVar(name) {
         for (let i = this.scopes.length - 1; i >= 0; i--) {
             if (name in this.scopes[i]) {

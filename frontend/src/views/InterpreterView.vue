@@ -1,8 +1,11 @@
 <template>
     <div>
-        <AstInterpreter v-if='astResult && Object.keys(astResult).length > 0' :astData='astResult.data.ast'
-                        ref='interpreter' />
-        <ConsoleFace ref='consoleComponent' />
+        <AstInterpreter
+            v-if="astResult && Object.keys(astResult).length > 0"
+            :astData="astResult.data.ast"
+            ref="interpreter"
+        />
+        <ConsoleFace ref="consoleComponent" />
     </div>
 </template>
 

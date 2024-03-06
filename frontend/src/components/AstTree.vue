@@ -1,5 +1,5 @@
 <template>
-    <div ref='astContainer' class='ast-container'></div>
+    <div ref="astContainer" class="ast-container"></div>
 </template>
 
 <script>
