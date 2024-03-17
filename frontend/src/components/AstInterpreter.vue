@@ -119,7 +119,7 @@ export default {
 
         const evalUnaryOp = (op, operand) => {
             switch (op) {
-                case '!':
+                case 'not':
                     return !operand
                 case '-':
                     return -operand

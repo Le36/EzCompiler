@@ -10,6 +10,9 @@ class SourceLocation:
     def __eq__(self, other):
         return isinstance(other, SourceLocation) or other is L
 
+    def __str__(self):
+        return f"L{self.line}:C{self.column}"
+
 
 L = SourceLocation(line=-1, column=-1)
 

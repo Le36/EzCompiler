@@ -1,7 +1,9 @@
 import sys
 
 from compiler.src.parser import parse, ParseException
+from compiler.src.sym_table import SymTable
 from compiler.src.tokenizer import tokenize
+from compiler.src.type_checker import typecheck
 
 
 def read_source_code(input_file):
@@ -19,8 +21,12 @@ def interpret(source_code, file_name):
     try:
         tokens = tokenize(source_code)
         ast = parse(tokens)
+        global_symtable = SymTable()
+        typecheck(ast, global_symtable)
         return {'ast': ast, 'tokens': tokens}
     except ParseException as e:
+        return {'error': str(e)}
+    except TypeError as e:
         return {'error': str(e)}
 
 

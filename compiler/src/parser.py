@@ -207,6 +207,6 @@ def parse(tokens: list[Token]) -> ast.Expression:
     result = parse_program()
 
     if pos < len(tokens):
-        raise ParseException(f'Unexpected tokens at end of input: {tokens[pos].text}')
+        raise ParseException(f'Unexpected tokens at end of input: {tokens[pos].text}. Location: {tokens[pos].location}')
 
     return result
