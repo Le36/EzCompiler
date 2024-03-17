@@ -31,6 +31,11 @@ export default {
             } catch (error) {
                 console.error(error)
             }
+        },
+        setEditorCode(code) {
+            if (this.editor) {
+                this.editor.setValue(code, 1)
+            }
         }
     }
 }

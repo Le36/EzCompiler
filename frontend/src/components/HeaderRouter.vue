@@ -1,5 +1,6 @@
 <script setup>
 import {RouterLink} from 'vue-router'
+import CodeExamplesSelector from '@/components/CodeExamples.vue'
 
 defineProps({
     msg: {
@@ -13,6 +14,7 @@ defineProps({
     <div class="greetings">
         <h1 class="green">{{ msg }}</h1>
         <h3>Try custom compiler here</h3>
+        <CodeExamplesSelector @codeSelected="$emit('codeSelected', $event)" />
         <nav>
             <RouterLink to="/">Interpreter</RouterLink>
             <RouterLink to="/tokenizer">Tokenizer</RouterLink>

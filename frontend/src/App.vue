@@ -4,11 +4,21 @@ import HeaderRouter from './components/HeaderRouter.vue'
 import CodeEditor from '@/components/CodeEditor.vue'
 </script>
 
+<script>
+export default {
+    methods: {
+        setEditorCode(code) {
+            this.$refs.codeEditor.setEditorCode(code)
+        }
+    }
+}
+</script>
+
 <template>
-    <HeaderRouter msg="Custom Compiler" />
+    <HeaderRouter msg="Custom Compiler" @codeSelected="setEditorCode" />
     <div class="wrapper">
         <div class="left-panel">
-            <CodeEditor />
+            <CodeEditor ref="codeEditor" />
         </div>
         <div class="right-panel">
             <RouterView />
