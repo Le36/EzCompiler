@@ -92,6 +92,7 @@ ul {
 
 .token-icon {
     color: hsla(160, 100%, 37%, 1);
+    min-width: 35px;
 }
 
 .token-type {

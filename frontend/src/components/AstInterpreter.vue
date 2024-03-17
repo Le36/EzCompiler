@@ -107,6 +107,10 @@ export default {
                     return leftVal <= rightVal
                 case '>=':
                     return leftVal >= rightVal
+                case 'and':
+                    return leftVal && rightVal
+                case 'or':
+                    return leftVal || rightVal
                 default:
                     console.error(`Unsupported binary operator: ${op}`)
                     return null
