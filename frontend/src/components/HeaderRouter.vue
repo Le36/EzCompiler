@@ -19,6 +19,7 @@ defineProps({
             <RouterLink to="/">Interpreter</RouterLink>
             <RouterLink to="/tokenizer">Tokenizer</RouterLink>
             <RouterLink to="/ast">AST Tree</RouterLink>
+            <RouterLink to="/ir">IR</RouterLink>
         </nav>
     </div>
 </template>

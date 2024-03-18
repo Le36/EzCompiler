@@ -1,26 +1,26 @@
 <template>
-    <div class='dropdown-container' tabindex='0' @click='toggleDropdown'>
-        <button class='dropdown-toggle'>
+    <div class="dropdown-container" tabindex="0" @click="toggleDropdown">
+        <button class="dropdown-toggle">
             Select Code Example
             <font-awesome-icon :icon="isOpen ? 'angle-up' : 'angle-down'" />
         </button>
-        <transition name='fade'>
-            <div class='dropdown-menu' v-if='isOpen'>
+        <transition name="fade">
+            <div class="dropdown-menu" v-if="isOpen">
                 <a
-                    v-for='example in codeExamples'
-                    :key='example.name'
-                    class='dropdown-item'
-                    @click.prevent='selectExample(example.code)'
-                    @click='toggleDropdown'
-                    @mouseover='currentExplanation = example.explanation'
+                    v-for="example in codeExamples"
+                    :key="example.name"
+                    class="dropdown-item"
+                    @click.prevent="selectExample(example.code)"
+                    @click="toggleDropdown"
+                    @mouseover="currentExplanation = example.explanation"
                     @mouseleave="currentExplanation = ''"
                 >
                     {{ example.name }}
                 </a>
             </div>
         </transition>
-        <transition name='fade'>
-            <div class='tooltip' v-if='currentExplanation'>
+        <transition name="fade">
+            <div class="tooltip" v-if="currentExplanation">
                 {{ currentExplanation }}
             </div>
         </transition>

@@ -15,6 +15,11 @@ const routes = [
         path: '/ast',
         name: 'ast',
         component: () => import('../views/AstView.vue')
+    },
+    {
+        path: '/ir',
+        name: 'ir',
+        component: () => import('../views/IrView.vue')
     }
 ]
 

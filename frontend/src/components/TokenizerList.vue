@@ -99,7 +99,7 @@ ul {
     font-weight: v-bind(500);
     color: #3a3a3a;
     text-transform: capitalize;
-    transition: color 0.3s;
+    transition: color 0.3s ease;
 }
 
 .token-value {
@@ -109,8 +109,8 @@ ul {
 
 .tooltip:hover {
     .token-type {
-        color: hsla(160, 100%, 37%, 1);
-        transition: color 0.3s;
+        color: #00bd7e;
+        transition: color 0.3s ease;
     }
 }
 </style>
