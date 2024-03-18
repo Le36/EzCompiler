@@ -124,7 +124,7 @@ ul {
 
 .ir-display {
     display: flex;
-    font-family: 'Consolas', 'Courier New', monospace;
+    font-family: 'Consolas', monospace;
     color: #7d7d7d;
     transition: color 0.3s ease;
 }

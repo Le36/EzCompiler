@@ -1,8 +1,20 @@
 import os
 
-from flask import request, jsonify, send_from_directory
 from app import app
+from flask import request, jsonify, send_from_directory, send_file
+
 from compiler import main as compiler
+
+
+@app.route('/download/executable')
+def download_executable():
+    executable_path = os.path.join(app.root_path, 'a.out')
+
+    if not os.path.exists(executable_path):
+        return jsonify({"error": "Executable file not found."}), 404
+
+    return send_file(executable_path, as_attachment=True, download_name="executable.out",
+                     mimetype='application/octet-stream')
 
 
 @app.route('/api/compile', methods=['POST'])

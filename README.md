@@ -55,4 +55,3 @@ Run the compiler on a source code file (include the source code file before buil
 where `COMMAND` may be one of these:
 
     interpret
-    TODO: add more

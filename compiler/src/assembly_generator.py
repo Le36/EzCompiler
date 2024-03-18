@@ -64,9 +64,9 @@ def generate_assembly(instructions: list[ir.Instruction]) -> str:
     emit(".type main, @function")
     emit(".section .text")
     emit("main:")
-    emit("    pushq %rbp")
-    emit("    movq %rsp, %rbp")
-    emit(f"    subq ${locals.stack_used()}, %rsp")
+    emit("pushq %rbp")
+    emit("movq %rsp, %rbp")
+    emit(f"subq ${locals.stack_used()}, %rsp")
 
     for insn in instructions:
         emit('# ' + str(insn))
@@ -114,8 +114,8 @@ def generate_assembly(instructions: list[ir.Instruction]) -> str:
                     if insn.dest:
                         emit(f'movq %rax, {locals.get_ref(insn.dest)}')
 
-    emit("    movq %rbp, %rsp")
-    emit("    popq %rbp")
-    emit("    ret")
+    emit("movq %rbp, %rsp")
+    emit("popq %rbp")
+    emit("ret")
 
     return "\n".join(lines)
