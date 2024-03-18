@@ -20,6 +20,11 @@ const routes = [
         path: '/ir',
         name: 'ir',
         component: () => import('../views/IrView.vue')
+    },
+    {
+        path: '/asm',
+        name: 'asm',
+        component: () => import('../views/AsmView.vue')
     }
 ]
 

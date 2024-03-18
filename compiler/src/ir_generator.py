@@ -38,8 +38,6 @@ def generate_ir(
     def visit(st: SymTable, expr: Expression) -> IRVar:
         loc = expr.location
 
-        print("expr: ", expr)
-
         match expr:
             case Literal():
                 match expr.value:

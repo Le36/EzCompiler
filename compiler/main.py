@@ -1,6 +1,7 @@
 import sys
 
-from compiler.src.ir import IRVar
+from compiler.src.assembler import assemble
+from compiler.src.assembly_generator import generate_assembly
 from compiler.src.ir_generator import generate_ir
 from compiler.src.parser import parse, ParseException
 from compiler.src.sym_table import SymTable
@@ -28,11 +29,15 @@ def interpret(source_code, file_name):
         typecheck(ast, global_symtable)
         root_types = initialize_root_types()
         ir_instructions = generate_ir(root_types, ast)
-        return {'ast': ast, 'tokens': tokens, 'ir': ir_instructions}
+        asm = generate_assembly(ir_instructions)
+        assemble(asm, 'a.out')
+        return {'ast': ast, 'tokens': tokens, 'ir': ir_instructions, 'asm': asm}
     except ParseException as e:
         return {'error': str(e)}
     except TypeError as e:
         return {'error': str(e)}
+    except Exception as e:
+        return {'error': f"Internal error: {str(e)}"}
 
 
 def process_command(command, input_file=None, source_code=None):

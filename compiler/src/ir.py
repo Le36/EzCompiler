@@ -1,6 +1,5 @@
 import dataclasses
 from dataclasses import dataclass
-from tkinter import Label
 from typing import Any
 
 from compiler.src.tokenizer import SourceLocation
@@ -60,6 +59,11 @@ class Call(Instruction):
 
 
 @dataclass(frozen=True)
+class Label(Instruction):
+    name: str
+
+
+@dataclass(frozen=True)
 class Jump(Instruction):
     label: Label
 
@@ -69,8 +73,3 @@ class CondJump(Instruction):
     cond: IRVar
     then_label: Label
     else_label: Label
-
-
-@dataclass(frozen=True)
-class Label(Instruction):
-    name: str

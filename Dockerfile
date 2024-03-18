@@ -10,6 +10,15 @@ RUN npm run build
 FROM python:3.11-slim
 WORKDIR /app
 
+
+# Install system dependencies including build tools and libc6-dev for static libraries
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    binutils \
+    gcc \
+    build-essential \
+    libc6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV POETRY_VERSION=1.7.1 \
     POETRY_VIRTUALENVS_CREATE=false \
     PYTHONPATH=/app

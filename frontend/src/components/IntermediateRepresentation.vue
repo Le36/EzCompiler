@@ -125,7 +125,7 @@ ul {
 .ir-display {
     display: flex;
     font-family: 'Consolas', 'Courier New', monospace;
-    color: #3a3a3a;
+    color: #7d7d7d;
     transition: color 0.3s ease;
 }
 
@@ -138,15 +138,15 @@ ul {
 }
 
 .keyword {
-    color: hsla(160, 100%, 37%, 0.7);
-}
-
-.parentheses {
     color: hsla(160, 100%, 37%, 1);
 }
 
+.parentheses {
+    color: hsl(212, 100%, 69%);
+}
+
 .brackets {
-    color: hsl(232, 100%, 50%);
+    color: hsl(211, 61%, 31%);
 }
 
 .boolean {
