@@ -1,8 +1,11 @@
 import sys
 
+from compiler.src.ir import IRVar
+from compiler.src.ir_generator import generate_ir
 from compiler.src.parser import parse, ParseException
 from compiler.src.sym_table import SymTable
 from compiler.src.tokenizer import tokenize
+from compiler.src.type import Int, Bool, Unit, FunType, initialize_root_types
 from compiler.src.type_checker import typecheck
 
 
@@ -23,7 +26,9 @@ def interpret(source_code, file_name):
         ast = parse(tokens)
         global_symtable = SymTable()
         typecheck(ast, global_symtable)
-        return {'ast': ast, 'tokens': tokens}
+        root_types = initialize_root_types()
+        ir_instructions = generate_ir(root_types, ast)
+        return {'ast': ast, 'tokens': tokens, 'ir': ir_instructions}
     except ParseException as e:
         return {'error': str(e)}
     except TypeError as e:

@@ -1,12 +1,14 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional, Union
 
 from compiler.src.tokenizer import SourceLocation, L
+from compiler.src.type import Type, UNIT
 
 
 @dataclass
 class Expression:
     location: SourceLocation
+    type: Type = field(kw_only=True, default_factory=lambda: UNIT)
 
 
 @dataclass

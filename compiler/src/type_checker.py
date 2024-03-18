@@ -8,8 +8,10 @@ def typecheck(node: Expression, symtable: SymTable) -> Type:
     match node:
         case Literal(value=value):
             if isinstance(value, bool):
+                node.type = BOOL
                 return BOOL
             elif isinstance(value, int):
+                node.type = INT
                 return INT
             elif value is None:
                 return UNIT
@@ -18,7 +20,8 @@ def typecheck(node: Expression, symtable: SymTable) -> Type:
 
         case Identifier(name=name):
             try:
-                return symtable.lookup(name)
+                node.type = symtable.lookup(name)
+                return node.type
             except LookupError:
                 raise TypeError(f"Undefined variable: '{name}'. Location: {node.location}")
 
@@ -29,12 +32,7 @@ def typecheck(node: Expression, symtable: SymTable) -> Type:
                         f"Assignment target must be a variable name. Found type: {type(left).__name__}. "
                         f"Location: {node.location}")
                 right_type = typecheck(right, symtable)
-                left_type = symtable.lookup(left.name) if symtable.lookup_without_error(left.name) else None
-                if left_type and type(left_type) != type(right_type):
-                    raise TypeError(
-                        f"Type mismatch in assignment to '{left.name}': expected {left_type.__class__.__name__}, found"
-                        f" {right_type.__class__.__name__}. Location: {node.location}")
-                symtable.update_or_define(left.name, right_type)
+                node.type = right_type
                 return right_type
             else:
                 t1 = typecheck(left, symtable)
@@ -47,15 +45,18 @@ def typecheck(node: Expression, symtable: SymTable) -> Type:
                         raise TypeError(
                             f"Expected both operands to be {expected_type} for operation '{op}', found {found_type1} "
                             f"and {found_type2}. Location: {node.location}")
+                    node.type = INT
                     return INT
                 elif op in ['and', 'or']:
                     if isinstance(t1, Bool) and isinstance(t2, Bool):
+                        node.type = BOOL
                         return BOOL
                     else:
                         raise TypeError(
                             f"Logical '{op}' operations require Bool type operands. Location: {node.location}")
                 elif op in ['==', '!=', '<', '<=', '>', '>=']:
                     if isinstance(t1, Int) and isinstance(t2, Int):
+                        node.type = BOOL
                         return BOOL
                     else:
                         raise TypeError(
@@ -64,14 +65,17 @@ def typecheck(node: Expression, symtable: SymTable) -> Type:
                     raise TypeError(f"Unsupported binary operator: {op}. Location: {node.location}")
 
         case UnaryOp(op=op, operand=operand):
-            t = typecheck(operand, symtable)
-            if op == 'not' and isinstance(t, Bool):
+            operand_type = typecheck(operand, symtable)
+            if op == 'not' and isinstance(operand_type, Bool):
+                node.type = BOOL
                 return BOOL
-            elif op == '-' and isinstance(t, Int):
+            elif op == '-' and isinstance(operand_type, Int):
+                node.type = INT
                 return INT
             else:
                 raise TypeError(
-                    f"Unsupported unary operator: {op} for type {type(t).__name__}. Location: {node.location}")
+                    f"Unsupported unary operator: {op} for type {type(operand_type).__name__}. "
+                    f"Location: {node.location}")
 
         case IfExpression(condition=condition, then_branch=then_branch, else_branch=else_branch):
             t1 = typecheck(condition, symtable)
@@ -81,6 +85,7 @@ def typecheck(node: Expression, symtable: SymTable) -> Type:
             t3 = typecheck(else_branch, symtable) if else_branch else UNIT
             if type(t2) != type(t3):
                 raise TypeError(f"The types of then and else branches must match. Location: {node.location}")
+            node.type = t2
             return t2
 
         case FunctionCall(name=name, arguments=arguments):
@@ -108,14 +113,17 @@ def typecheck(node: Expression, symtable: SymTable) -> Type:
                         f"got {arg_type.__class__.__name__}. Location: {node.location}")
 
             if name == 'read_int':
+                node.type = INT
                 return INT
             return UNIT
 
         case UnaryOp(op=op, operand=operand):
             t = typecheck(operand, symtable)
             if op == '-' and isinstance(t, Int):
+                node.type = INT
                 return INT
             elif op == '!' and isinstance(t, Bool):
+                node.type = BOOL
                 return BOOL
             else:
                 raise TypeError(
@@ -126,7 +134,9 @@ def typecheck(node: Expression, symtable: SymTable) -> Type:
             for expr in expressions:
                 typecheck(expr, local_symtable)
             if result_expression:
-                return typecheck(result_expression, local_symtable)
+                result_type = typecheck(result_expression, local_symtable)
+                node.type = result_type
+                return result_type
             return UNIT
 
         case While(condition=condition, body=body):

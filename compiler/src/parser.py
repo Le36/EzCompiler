@@ -1,7 +1,7 @@
 import compiler.src.ast as ast
 from compiler.src.ast import Expression, Block
 
-from compiler.src.tokenizer import Token, SourceLocation
+from compiler.src.tokenizer import Token
 
 operators_precedence = [
     ['='],

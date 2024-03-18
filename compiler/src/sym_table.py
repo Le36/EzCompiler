@@ -1,5 +1,6 @@
 from typing import Any
 
+from compiler.src.ir import IRVar
 from compiler.src.type import Type
 
 
@@ -8,10 +9,10 @@ class SymTable:
         self.symbols = {}
         self.parent = parent
 
-    def define(self, name: str, type: Type):
+    def define(self, name: str | IRVar, type: Type | IRVar):
         self.symbols[name] = type
 
-    def lookup(self, name: str) -> Type:
+    def lookup(self, name: str) -> Type | IRVar:
         if name in self.symbols:
             return self.symbols[name]
         elif self.parent:
