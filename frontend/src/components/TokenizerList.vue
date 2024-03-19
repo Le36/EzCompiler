@@ -1,7 +1,7 @@
 <template>
     <div class="tokens-view">
         <div class="tokens-scrollable">
-            <ul>
+            <ul class="token-list">
                 <li v-for="(token, index) in result.data.tokens" :key="index">
                     <Tooltip>
                         <template v-slot:default>
@@ -69,7 +69,7 @@ li {
     padding: 0 5px 0 5px;
 }
 
-ul {
+.token-list {
     padding-inline-start: 0;
     border: #00bd7e 1px solid;
 }

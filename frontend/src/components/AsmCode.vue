@@ -4,13 +4,24 @@
             <div class="asm-code-container" v-html="highlightedCode"></div>
         </div>
     </div>
-    <button @click="downloadExecutable" class="btn btn-primary">Download Executable</button>
+    <div class="button-container">
+        <pre v-if="!fileGenerated" class="error-message">Error: No executable file was generated.</pre>
+        <button v-if="fileGenerated" @click="downloadExecutable" class="btn btn-primary">Download</button>
+        <span v-if="fileGenerated">
+            Download the ready-to-run executable, invoked using the
+            <a href="https://sourceware.org/binutils/docs-2.41/as.html" target="_blank" rel="noopener noreferrer"
+                >GNU Assembler</a
+            >
+            for assembly-to-machine code translation.
+        </span>
+    </div>
 </template>
 
 <script>
 export default {
     props: {
-        result: String
+        result: String,
+        fileGenerated: Boolean
     },
     methods: {
         downloadExecutable() {
@@ -73,28 +84,25 @@ export default {
 
 .asm-code-container {
     color: #b5b5b5;
-    padding: 16px;
     overflow: auto;
     font-family: 'Consolas', monospace;
     font-size: 14px;
     white-space: pre-wrap;
     word-wrap: break-word;
-    border-radius: 8px;
-    border: #00bd7e 1px solid;
 }
 
 .asm-scrollable {
-    max-height: 430px;
+    max-height: 450px;
     width: 500px;
     padding: 35px 10px 35px 10px;
     overflow-y: auto;
 }
 
 .btn {
-    margin: 10px;
     display: flex;
     justify-content: space-evenly;
-    padding: 10px 20px;
+    margin: 5px;
+    padding: 10px 15px;
     font-size: 16px;
     cursor: pointer;
     text-align: center;
@@ -104,10 +112,12 @@ export default {
     background-color: #00bd7e;
     border: none;
     border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
 .btn:hover {
     background-color: #006141;
+    transition: background-color 0.3s ease;
 }
 
 .comment {
@@ -124,5 +134,16 @@ export default {
 
 .register {
     color: #4ec9b0;
+}
+
+.error-message {
+    display: flex;
+    color: #ff3860;
+    justify-content: space-around;
+}
+
+.button-container {
+    display: flex;
+    font-size: 14px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="ir-view">
         <div class="ir-scrollable">
-            <ul>
+            <ul class="ir-list">
                 <li v-for="(instruction, index) in transformedIR" :key="index">
                     <TooltipItem>
                         <template v-slot:default>
@@ -117,7 +117,7 @@ li {
     padding: 0 5px 0 5px;
 }
 
-ul {
+.ir-list {
     padding-inline-start: 5px;
     border: #00bd7e 1px solid;
 }

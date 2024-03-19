@@ -7,6 +7,11 @@ from compiler.src.sym_table import SymTable
 from compiler.src.tokenizer import SourceLocation
 from compiler.src.type import Unit, Int, Bool
 
+
+class IrException(Exception):
+    pass
+
+
 var_counter = 0
 label_counter = {}
 
@@ -50,7 +55,7 @@ def generate_ir(
                     case None:
                         var = var_unit
                     case _:
-                        raise Exception(f"{loc}: unsupported literal: {type(expr.value)}")
+                        raise IrException(f"{loc}: unsupported literal: {type(expr.value)}")
                 return var
 
             case Identifier():
@@ -86,7 +91,7 @@ def generate_ir(
 
                 if expr.op == "=":
                     if not isinstance(expr.left, Identifier):
-                        raise Exception(f"{loc}: Left-hand side of '=' must be an identifier.")
+                        raise IrException(f"{loc}: Left-hand side of '=' must be an identifier.")
 
                     var_lhs = st.lookup(expr.left.name)
                     var_rhs = visit(st, expr.right)
@@ -113,7 +118,7 @@ def generate_ir(
                 elif expr.op == "-":
                     var_result = new_var(Int)
                 else:
-                    raise Exception(f'{loc}: Unsupported unary operator {expr.op}')
+                    raise IrException(f'{loc}: Unsupported unary operator {expr.op}')
 
                 ins.append(Call(loc, var_op, [var_value], var_result))
 
@@ -201,7 +206,7 @@ def generate_ir(
                     ins.append(Call(loc, st.lookup(expr.name), [], var_result))
                     return var_result
                 else:
-                    raise Exception(f"Unsupported function call: {expr.name}")
+                    raise IrException(f"Unsupported function call: {expr.name}")
 
     root_symtab = SymTable(parent=None)
     global var_counter

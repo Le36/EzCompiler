@@ -2,7 +2,9 @@
     <div class="console-window">
         <div class="console-titlebar">
             <span class="title">Console Output</span>
-            <button class="close-btn" @click="clearConsole">X</button>
+            <button class="close-btn" @click="clearConsole">
+                <font-awesome-icon icon="times" />
+            </button>
         </div>
         <div class="console-container">
             <div class="console-output" ref="consoleOutput">
@@ -13,7 +15,10 @@
 </template>
 
 <script>
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
+
 export default {
+    components: {FontAwesomeIcon},
     data() {
         return {
             lines: [],
@@ -87,5 +92,10 @@ export default {
     white-space: pre-wrap;
     word-break: break-word;
     overflow-wrap: break-word;
+}
+
+.close-btn {
+    font-size: 20px;
+    cursor: pointer;
 }
 </style>

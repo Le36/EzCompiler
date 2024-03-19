@@ -1,7 +1,11 @@
 <template>
     <div>
         <NoResult v-if="compilerOutput.error || !compilerOutput.compilation" :errorMessage="compilerOutput.error" />
-        <AsmCode v-else :result="compilerOutput.compilation.data.asm" />
+        <AsmCode
+            v-else
+            :result="compilerOutput.compilation.data.asm"
+            :fileGenerated="compilerOutput.compilation.data.file_generated"
+        />
     </div>
 </template>
 
