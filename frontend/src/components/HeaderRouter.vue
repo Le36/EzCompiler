@@ -13,14 +13,14 @@ defineProps({
 <template>
     <div class="greetings">
         <h1 class="green">{{ msg }}</h1>
-        <h3>Try custom compiler here</h3>
+        <h3>Experience Easy Compilation with EzCompiler</h3>
         <CodeExamplesSelector @codeSelected="$emit('codeSelected', $event)" />
         <nav>
             <RouterLink to="/">Interpreter</RouterLink>
             <RouterLink to="/tokenizer">Tokenizer</RouterLink>
-            <RouterLink to="/ast">AST Tree</RouterLink>
-            <RouterLink to="/ir">IR</RouterLink>
-            <RouterLink to="/asm">Assembly</RouterLink>
+            <RouterLink to="/ast">AST (Abstract Syntax Tree)</RouterLink>
+            <RouterLink to="/ir">IR (Intermediate Representation)</RouterLink>
+            <RouterLink to="/asm">Assembly Code</RouterLink>
         </nav>
     </div>
 </template>
@@ -40,24 +40,19 @@ h1 {
     font-weight: 500;
     font-size: 2.6rem;
     position: relative;
-    top: -10px;
 }
 
 h3 {
     font-size: 1.2rem;
+    margin-bottom: 20px;
 }
 
 .greetings h1,
 .greetings h3 {
-    text-align: center;
+    text-align: left;
 }
 
 @media (min-width: 1024px) {
-    .greetings h1,
-    .greetings h3 {
-        text-align: left;
-    }
-
     nav {
         text-align: left;
         margin-left: -1rem;

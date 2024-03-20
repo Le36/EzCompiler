@@ -47,7 +47,7 @@ Language spec
 
 This language is a minimalist, dynamically typed programming language designed for educational purposes and simple scripting tasks. The syntax and semantics are intentionally straightforward to facilitate learning about language design, parsing, and evaluation mechanisms. The language supports basic arithmetic, control flow constructs (if-then-else, while loops), and function calls, making it suitable for implementing algorithms and simple applications.
 
-The design focuses on clear and concise constructs, aiming to make the language both easy to implement and use. While simplicity is a key goal, the language is powerful enough to demonstrate fundamental programming concepts such as recursion, iteration, and conditional branching.
+The design focuses on clear and concise constructs, aiming to make the language both easy to implement and use. While simplicity is a key goal, the language is powerful enough to demonstrate fundamental programming concepts such as iteration and conditional branching.
 
 Example
 -------
@@ -199,11 +199,11 @@ The output of a program includes any side effects from built-in function calls (
 <style>
 .modal-overlay {
     position: fixed;
-    top: 20%;
-    left: 30%;
+    top: 15%;
+    left: 15%;
     background: var(--color-background);
     border: 1px solid #00bd7e;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 12px 12px 12px rgba(0, 0, 0, 0.2);
     z-index: 1050;
     display: flex;
     flex-direction: column;

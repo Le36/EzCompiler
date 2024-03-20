@@ -15,7 +15,7 @@ export default {
 </script>
 
 <template>
-    <HeaderRouter msg="Custom Compiler" @codeSelected="setEditorCode" />
+    <HeaderRouter msg="EzCompiler" @codeSelected="setEditorCode" />
     <div class="wrapper">
         <div class="left-panel">
             <CodeEditor ref="codeEditor" />
@@ -27,6 +27,19 @@ export default {
 </template>
 
 <style scoped>
+.left-panel,
+.right-panel {
+    border: #00bd7e 1px solid;
+    width: 350px;
+    height: 500px;
+}
+
+.right-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 @media (min-width: 1024px) {
     .wrapper {
         display: flex;
@@ -44,21 +57,8 @@ export default {
 
     .left-panel,
     .right-panel {
-        width: 300px;
+        width: 500px;
         height: 500px;
     }
-}
-
-.left-panel,
-.right-panel {
-    border: #00bd7e 1px solid;
-    width: 500px;
-    height: 500px;
-}
-
-.right-panel {
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 </style>

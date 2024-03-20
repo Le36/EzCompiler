@@ -88,6 +88,14 @@ export default {
 
 .compile-btn-container {
     display: flex;
-    font-size: 14px;
+    font-size: 11px;
+    align-items: center;
+}
+
+@media (min-width: 1024px) {
+    .compile-btn-container {
+        display: flex;
+        font-size: 14px;
+    }
 }
 </style>

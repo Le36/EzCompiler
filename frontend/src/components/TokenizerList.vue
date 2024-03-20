@@ -59,7 +59,7 @@ export default {
 
 .tokens-scrollable {
     max-height: 498px;
-    width: 500px;
+    width: 350px;
     padding: 35px 10px 35px 10px;
     overflow-y: auto;
 }
@@ -111,6 +111,12 @@ li {
     .token-type {
         color: #00bd7e;
         transition: color 0.3s ease;
+    }
+}
+
+@media (min-width: 1024px) {
+    .tokens-scrollable {
+        width: 500px;
     }
 }
 </style>

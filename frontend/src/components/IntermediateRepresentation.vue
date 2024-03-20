@@ -107,7 +107,7 @@ export default {
 
 .ir-scrollable {
     max-height: 498px;
-    width: 500px;
+    width: 350px;
     padding: 35px 10px 35px 10px;
     overflow-y: auto;
 }
@@ -119,7 +119,6 @@ li {
 
 .ir-list {
     padding-inline-start: 5px;
-    border: #00bd7e 1px solid;
 }
 
 .ir-display {
@@ -159,5 +158,15 @@ li {
 
 .address {
     color: hsl(24, 54%, 60%);
+}
+
+@media (min-width: 1024px) {
+    .ir-scrollable {
+        width: 500px;
+    }
+
+    .ir-list {
+        border: #00bd7e 1px solid;
+    }
 }
 </style>

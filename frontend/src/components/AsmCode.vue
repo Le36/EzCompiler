@@ -93,7 +93,7 @@ export default {
 
 .asm-scrollable {
     max-height: 450px;
-    width: 500px;
+    width: 350px;
     padding: 35px 10px 35px 10px;
     overflow-y: auto;
 }
@@ -144,6 +144,18 @@ export default {
 
 .button-container {
     display: flex;
-    font-size: 14px;
+    font-size: 11px;
+    align-items: center;
+}
+
+@media (min-width: 1024px) {
+    .button-container {
+        display: flex;
+        font-size: 14px;
+    }
+
+    .asm-scrollable {
+        width: 500px;
+    }
 }
 </style>

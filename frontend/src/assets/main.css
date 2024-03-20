@@ -1,10 +1,13 @@
 @import './base.css';
 
 #app {
+    display: flex;
+    flex-direction: column;
     max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
+    margin: 0;
+    padding: 0.5rem;
     font-weight: normal;
+    align-items: center;
 }
 
 a,
@@ -30,5 +33,6 @@ a,
         display: flex;
         flex-direction: column;
         padding: 2rem;
+        margin: 0 auto;
     }
 }

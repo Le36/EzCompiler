@@ -43,12 +43,18 @@ export default {
 <style scoped>
 .console-window {
     border: #00bd7e 1px solid;
-    width: 400px;
+    width: 300px;
     font-family: 'Consolas', 'Courier New', monospace;
 }
 
+@media (min-width: 1024px) {
+    .console-window {
+        width: 400px;
+    }
+}
+
 .console-titlebar {
-    background-color: #3a3a3a;
+    background-color: var(--vt-c-black-soft);
     color: #00bd7e;
     padding: 5px 10px;
     display: flex;
@@ -74,7 +80,7 @@ export default {
     color: #00bd7e;
     border-top: #00bd7e 1px solid;
     padding: 10px;
-    height: 300px;
+    height: 400px;
     display: flex;
     flex-direction: column;
     gap: 10px;

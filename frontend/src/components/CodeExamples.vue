@@ -239,16 +239,16 @@ export default {
     position: relative;
     display: inline-block;
     user-select: none;
+    padding-bottom: 10px;
 }
 
 .dropdown-toggle {
     background: none;
-    color: #00bd7e;
+    color: var(--color-text);
     padding: 10px;
-    border: #565656 1px solid;
+    border: #00bd7e 1px solid;
     cursor: pointer;
     outline: none;
-    border-radius: 5px;
 }
 
 .dropdown-toggle:focus {
@@ -259,9 +259,8 @@ export default {
     position: absolute;
     background-color: rgba(58, 58, 58, 0.9);
     min-width: 160px;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 12px 12px 12px rgba(0, 0, 0, 0.2);
     z-index: 100;
-    border-radius: 5px;
 }
 
 .dropdown-item {
@@ -269,11 +268,11 @@ export default {
     padding: 12px 16px;
     text-decoration: black;
     display: block;
+    border-bottom: #00bd7e 1px solid;
 }
 
 .dropdown-item:hover {
     background-color: rgba(0, 189, 126, 0.8);
-    border-radius: 5px;
 }
 
 .tooltip {
@@ -287,7 +286,7 @@ export default {
     padding: 8px;
     margin-top: 5px;
     width: 250px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 12px 12px 12px rgba(0, 0, 0, 0.2);
     z-index: 1000;
 }
 
