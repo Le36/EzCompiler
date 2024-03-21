@@ -144,7 +144,7 @@ export default {
 
 .button-container {
     display: flex;
-    font-size: 11px;
+    font-size: 10px;
     align-items: center;
 }
 

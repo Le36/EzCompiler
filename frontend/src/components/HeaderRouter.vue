@@ -1,6 +1,7 @@
 <script setup>
 import {RouterLink} from 'vue-router'
 import CodeExamplesSelector from '@/components/CodeExamples.vue'
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 
 defineProps({
     msg: {
@@ -12,9 +13,21 @@ defineProps({
 
 <template>
     <div class="greetings">
-        <h1 class="green">{{ msg }}</h1>
-        <h3>Experience Easy Compilation with EzCompiler</h3>
-        <CodeExamplesSelector @codeSelected="$emit('codeSelected', $event)" />
+        <div class="title">
+            <h1 class="green">
+                <font-awesome-icon icon="fa-solid fa-microchip" />
+                {{ msg }}
+            </h1>
+            <CodeExamplesSelector @codeSelected="$emit('codeSelected', $event)" />
+        </div>
+        <h3>
+            Experience Hands-On Compilation with Our Custom EzLang on EzCompiler. View Project on
+            <a href="https://github.com/Le36" target="_blank" rel="noopener noreferrer" class="github-link">
+                GitHub
+                <font-awesome-icon icon="fa-brands fa-github" />
+            </a>
+        </h3>
+
         <nav>
             <RouterLink to="/">Interpreter</RouterLink>
             <RouterLink to="/tokenizer">Tokenizer</RouterLink>
@@ -25,20 +38,31 @@ defineProps({
     </div>
 </template>
 
+<script>
+import {library} from '@fortawesome/fontawesome-svg-core'
+import {faMicrochip} from '@fortawesome/free-solid-svg-icons'
+import {faGithub} from '@fortawesome/free-brands-svg-icons'
+
+library.add(faGithub)
+library.add(faMicrochip)
+</script>
+
 <style scoped>
+.title {
+    display: flex;
+    flex-direction: column;
+}
+
 nav a {
     display: inline-block;
     padding: 0 1rem;
     border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-    border: 0;
+    border-right: 1px solid var(--color-border);
 }
 
 h1 {
     font-weight: 500;
-    font-size: 2.6rem;
+    font-size: 3rem;
     position: relative;
 }
 
@@ -52,14 +76,32 @@ h3 {
     text-align: left;
 }
 
+nav {
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
 @media (min-width: 1024px) {
     nav {
-        text-align: left;
-        margin-left: -1rem;
         font-size: 1rem;
+        border-right: 0;
+    }
 
-        padding: 1rem 0;
-        margin-top: 1rem;
+    nav a:first-of-type {
+        border-left: 0;
+    }
+
+    nav a:last-of-type {
+        border-right: 0;
+    }
+
+    .title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
     }
 }
 </style>

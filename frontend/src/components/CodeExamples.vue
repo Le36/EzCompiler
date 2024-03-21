@@ -4,21 +4,19 @@
             Select Code Example
             <font-awesome-icon :icon="isOpen ? 'angle-up' : 'angle-down'" />
         </button>
-        <transition name="fade">
-            <div class="dropdown-menu" v-if="isOpen">
-                <a
-                    v-for="example in codeExamples"
-                    :key="example.name"
-                    class="dropdown-item"
-                    @click.prevent="selectExample(example.code)"
-                    @click="toggleDropdown"
-                    @mouseover="currentExplanation = example.explanation"
-                    @mouseleave="currentExplanation = ''"
-                >
-                    {{ example.name }}
-                </a>
-            </div>
-        </transition>
+        <div class="dropdown-menu" v-if="isOpen">
+            <a
+                v-for="example in codeExamples"
+                :key="example.name"
+                class="dropdown-item"
+                @click.prevent="selectExample(example.code)"
+                @click="toggleDropdown"
+                @mouseover="currentExplanation = example.explanation"
+                @mouseleave="currentExplanation = ''"
+            >
+                {{ example.name }}
+            </a>
+        </div>
         <transition name="fade">
             <div class="tooltip" v-if="currentExplanation">
                 {{ currentExplanation }}
@@ -239,7 +237,6 @@ export default {
     position: relative;
     display: inline-block;
     user-select: none;
-    padding-bottom: 10px;
 }
 
 .dropdown-toggle {
@@ -278,16 +275,22 @@ export default {
 .tooltip {
     position: absolute;
     top: 0;
-    left: 100%;
-    transform: translateX(10px);
+    transform: translateX(180px);
     background-color: rgba(0, 189, 126, 0.68);
     border: 1px solid #ccc;
     color: white;
     padding: 8px;
     margin-top: 5px;
-    width: 250px;
+    width: 150px;
     box-shadow: 12px 12px 12px rgba(0, 0, 0, 0.2);
     z-index: 1000;
+}
+
+@media (min-width: 1024px) {
+    .tooltip {
+        transform: translateX(-260px);
+        width: 250px;
+    }
 }
 
 .fade-enter-active,

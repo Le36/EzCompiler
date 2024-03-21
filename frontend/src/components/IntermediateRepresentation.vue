@@ -100,6 +100,14 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+li {
+    list-style-type: none;
+    padding: 0 5px 0 5px;
+}
+</style>
+
 <style>
 .ir-view {
     padding: 5px;
@@ -110,11 +118,6 @@ export default {
     width: 350px;
     padding: 35px 10px 35px 10px;
     overflow-y: auto;
-}
-
-li {
-    list-style-type: none;
-    padding: 0 5px 0 5px;
 }
 
 .ir-list {

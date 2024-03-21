@@ -14,8 +14,9 @@ export default {
 
 <style>
 .no-result {
-    color: grey;
+    color: var(--color-text);
     font-style: italic;
     width: 300px;
+    text-align: center;
 }
 </style>

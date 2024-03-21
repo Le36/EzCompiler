@@ -2,6 +2,7 @@
 import {RouterView} from 'vue-router'
 import HeaderRouter from './components/HeaderRouter.vue'
 import CodeEditor from '@/components/CodeEditor.vue'
+import InfoBox from '@/components/InfoBox.vue'
 </script>
 
 <script>
@@ -24,6 +25,7 @@ export default {
             <RouterView />
         </div>
     </div>
+    <InfoBox />
 </template>
 
 <style scoped>
