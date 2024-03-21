@@ -34,7 +34,9 @@ export default {
     mounted() {
         this.editor = ace.edit('editor')
         this.editor.setTheme('ace/theme/clouds_midnight')
+        this.editor.setFontSize(14)
         this.editor.session.setMode('ace/mode/javascript')
+        this.editor.session.setUseWorker(false)
     },
     methods: {
         async submitCode() {
