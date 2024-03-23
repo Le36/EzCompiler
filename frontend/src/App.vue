@@ -17,15 +17,17 @@ export default {
 
 <template>
     <HeaderRouter msg="EzCompiler" @codeSelected="setEditorCode" />
-    <div class="wrapper">
-        <div class="left-panel">
-            <CodeEditor ref="codeEditor" />
+    <div class="bordered">
+        <div class="wrapper">
+            <div class="left-panel">
+                <CodeEditor ref="codeEditor" />
+            </div>
+            <div class="right-panel">
+                <RouterView />
+            </div>
         </div>
-        <div class="right-panel">
-            <RouterView />
-        </div>
+        <InfoBox />
     </div>
-    <InfoBox />
 </template>
 
 <style scoped>
@@ -40,6 +42,11 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    border-top: 0;
+}
+
+.bordered {
+    box-shadow: 0 0 12px 5px rgba(0, 0, 0, 0.2);
 }
 
 @media (min-width: 1024px) {
@@ -60,7 +67,12 @@ export default {
     .left-panel,
     .right-panel {
         width: 500px;
-        height: 500px;
+        height: 501px;
+    }
+
+    .right-panel {
+        border-left: 0;
+        border-top: #00bd7e 1px solid;
     }
 }
 </style>

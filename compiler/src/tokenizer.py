@@ -11,7 +11,7 @@ class SourceLocation:
         return isinstance(other, SourceLocation) or other is L
 
     def __str__(self):
-        return f"L{self.line}:C{self.column}"
+        return f"Line {self.line}, Column {self.column}"
 
 
 L = SourceLocation(line=-1, column=-1)

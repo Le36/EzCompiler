@@ -1,7 +1,7 @@
 <template>
     <div class="console-window">
         <div class="console-titlebar">
-            <span class="title">Console Output</span>
+            <span class="title">Interpreter Output</span>
             <button class="close-btn" @click="clearConsole">
                 <font-awesome-icon icon="times" />
             </button>
@@ -45,6 +45,7 @@ export default {
     border: #00bd7e 1px solid;
     width: 300px;
     font-family: 'Consolas', 'Courier New', monospace;
+    box-shadow: 0 0 12px 5px rgba(0, 0, 0, 0.2);
 }
 
 @media (min-width: 1024px) {

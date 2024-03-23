@@ -74,6 +74,7 @@ li {
 .token-list {
     padding-inline-start: 0;
     border: #00bd7e 1px solid;
+    box-shadow: 0 0 12px 5px rgba(0, 0, 0, 0.2);
 }
 
 .tokens-scrollable ul li:nth-child(even) {

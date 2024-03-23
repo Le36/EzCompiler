@@ -21,7 +21,7 @@ def download_executable():
 def compile_code():
     code = request.json.get('code', '')
     try:
-        data = compiler.process_command('interpret', source_code=code)
+        data = compiler.full_compile(source_code=code)
         return jsonify(data)
     except Exception as e:
         return jsonify({"error": str(e)}), 400

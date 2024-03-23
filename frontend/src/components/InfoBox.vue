@@ -208,7 +208,7 @@ export default {
     padding: 15px;
     color: var(--color-text);
     overflow-y: auto;
-    max-height: 280px;
+    max-height: 500px;
 }
 
 .info-box h3 {
@@ -224,6 +224,7 @@ export default {
 @media (min-width: 1024px) {
     .info-box {
         width: 1000px;
+        max-height: 280px;
     }
 }
 

@@ -330,6 +330,7 @@ export default {
     border: #00bd7e 1px solid;
     cursor: pointer;
     outline: none;
+    box-shadow: 0 0 12px 5px rgba(0, 0, 0, 0.2);
 }
 
 .dropdown-toggle:focus {
@@ -338,7 +339,7 @@ export default {
 
 .dropdown-menu {
     position: absolute;
-    background-color: rgba(58, 58, 58, 0.9);
+    background-color: rgba(58, 58, 58, 0.95);
     min-width: 160px;
     box-shadow: 12px 12px 12px rgba(0, 0, 0, 0.2);
     z-index: 100;
@@ -360,7 +361,7 @@ export default {
     position: absolute;
     top: 0;
     transform: translateX(180px);
-    background-color: rgba(0, 189, 126, 0.68);
+    background-color: rgba(0, 189, 126, 0.95);
     border: 1px solid #ccc;
     color: white;
     padding: 8px;

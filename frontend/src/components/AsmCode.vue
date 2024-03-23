@@ -8,7 +8,7 @@
         <pre v-if="!fileGenerated" class="error-message">Error: No executable file was generated.</pre>
         <button v-if="fileGenerated" @click="downloadExecutable" class="btn btn-primary">Download</button>
         <span v-if="fileGenerated">
-            Download the ready-to-run executable, invoked using the
+            Download executable, invoked using the
             <a href="https://sourceware.org/binutils/docs-2.41/as.html" target="_blank" rel="noopener noreferrer"
                 >GNU Assembler</a
             >
@@ -146,6 +146,7 @@ export default {
     display: flex;
     font-size: 10px;
     align-items: center;
+    max-height: 50px;
 }
 
 @media (min-width: 1024px) {
