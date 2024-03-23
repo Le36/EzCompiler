@@ -1,6 +1,54 @@
-## Custom Compiler
+# EzCompiler
 
-Made with Vue.js, Python, Flask and Docker.
+EzCompiler is a web-based compiler that enables users to write, compile, and interpret code in a custom language
+designed specifically for this platform.
+
+**Key Features:**
+
+- **Interpreter**: Execute code directly in the browser, providing instant feedback on the output.
+- **Tokenizer Output:** Inspect the breakdown of code into tokens, providing insight into the parsing process.
+- **Abstract Syntax Tree (AST):** Visualize the structure of code through the generated AST, aiding in understanding the
+  syntactic relationships within your code.
+- **Intermediate Representation (IR):** Examine the IR to see how code is optimized and prepared for assembly, offering
+  a glimpse into compiler optimizations.
+- **Compiled Assembly:** View the assembly code generated from your high-level code, bridging the gap between high-level
+  language and machine instructions.
+- **Executable Download:** Users can download the compiled program and run it on Linux, experiencing the full cycle from
+  code to execution.
+
+Developed using Vue.js for the frontend, Python and Flask for the backend, and Docker for easy deployment and isolation.
+
+## Live Demo
+
+Experience EzCompiler firsthand and explore its capabilities:
+
+### [https://ezcompiler.fly.dev/](https://ezcompiler.fly.dev/)
+
+[![Try EzCompiler](ezcompiler.png)](https://ezcompiler.fly.dev/)
+
+## Language Specification
+
+The complete specification for the custom language utilized within EzCompiler is readily accessible in the compiler's
+user interface, located adjacent to the compile button.
+
+The following example demonstrates a program written in this language. It implements the Collatz conjecture algorithm,
+which is a sequence of operations on an initial number to eventually reach the number 1. The program prints each step of
+the sequence:
+
+```
+{
+    var n = 50;
+    print_int(n);
+    while n > 1 do {
+        if n % 2 == 0 then {
+            n = n / 2;
+        } else {
+            n = 3 * n + 1;
+        }
+        print_int(n);
+    }
+}
+```
 
 ## Setup with Docker
 
@@ -15,7 +63,7 @@ environment configurations. To get started, you will need to have Docker install
 
 To build the Docker image for this project, navigate to the project's root directory in your terminal and run:
 
-    docker build -t my-compiler .
+    docker build -t ezcompiler .
 
 This command builds a Docker image named my-compiler based on the instructions in the Dockerfile. It includes the
 backend
@@ -25,33 +73,7 @@ server, the compiler, and the built frontend.
 
 After building the image, you can run the project with:
 
-    docker run -p 5000:5000 my-compiler
+    docker run -p 5000:5000 ezcompiler
 
 This command starts a container from the my-compiler image. It maps port 5000 of the container to port 5000 on your host
 machine, allowing you to access the application via http://localhost:5000.
-
-## Accessing the Application
-
-With the Docker container running, you can access:
-
-- The web frontend at: http://localhost:5000
-- The API endpoints directly via their paths (e.g., http://localhost:5000/api/compile)
-
-## Running Compiler Commands (Optional)
-
-If you need to run specific compiler commands within the Docker container, you can execute commands within the running
-container using Docker's exec command. For example:
-
-    docker run -it --entrypoint /bin/bash my-compiler
-
-You can navigate to /app/compiler and run the compiler commands from there. Running tests manually:
-
-    poetry run pytest
-
-Run the compiler on a source code file (include the source code file before build command, in the compiler directory):
-
-    python3 main.py COMMAND path/to/source/code
-
-where `COMMAND` may be one of these:
-
-    interpret
