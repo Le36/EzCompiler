@@ -65,7 +65,7 @@ To build the Docker image for this project, navigate to the project's root direc
 
     docker build -t ezcompiler .
 
-This command builds a Docker image named my-compiler based on the instructions in the Dockerfile. It includes the
+This command builds a Docker image named ezcompiler based on the instructions in the Dockerfile. It includes the
 backend
 server, the compiler, and the built frontend.
 
@@ -75,5 +75,5 @@ After building the image, you can run the project with:
 
     docker run -p 5000:5000 ezcompiler
 
-This command starts a container from the my-compiler image. It maps port 5000 of the container to port 5000 on your host
+This command starts a container from the ezcompiler image. It maps port 5000 of the container to port 5000 on your host
 machine, allowing you to access the application via http://localhost:5000.
